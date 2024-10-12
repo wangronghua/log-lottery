@@ -163,14 +163,14 @@ export const usePrizeConfig = defineStore('prize', {
             }
         }
     },
-    persist: {
-        enabled: true,
-        strategies: [
-            {
-                // 如果要存储在localStorage中
-                storage: localStorage,
-                key: 'prizeConfig',
-            },
-        ],
-    },
+    // persist: {
+    //     enabled: true,
+    //     strategies: [
+    //         {
+    //             // 如果要存储在localStorage中
+    //             storage: localStorage,
+    //             key: 'prizeConfig',
+    //         },
+    //     ],
+    // },
 });

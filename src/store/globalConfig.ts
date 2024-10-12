@@ -6,9 +6,9 @@ export const useGlobalConfig = defineStore('global', {
     state() {
         return {
             globalConfig: {
-                rowCount: 17,
+                rowCount: 20,
                 isSHowPrizeList: true,
-                topTitle: '大明内阁六部御前奏对',
+                topTitle: '',
                 theme: {
                     name: 'dracula',
                     detail: { primary: '#0f5fd3' },
@@ -19,7 +19,7 @@ export const useGlobalConfig = defineStore('global', {
                     luckyCardColor: '#ECB1AC',
                     textSize: 30,
                     patternColor: '#1b66c9',
-                    patternList: defaultPatternList as number[],
+                    patternList: [],
                 },
                 musicList: defaultMusicList as IMusic[],
                 imageList: defaultImageList as IImage[],
@@ -213,7 +213,7 @@ export const useGlobalConfig = defineStore('global', {
             this.globalConfig = {
                 rowCount: 17,
                 isSHowPrizeList: true,
-                topTitle: '大明内阁六部御前奏对',
+                topTitle: '',
                 theme: {
                     name: 'dracula',
                     detail: { primary: '#0f5fd3' },
@@ -235,15 +235,15 @@ export const useGlobalConfig = defineStore('global', {
                 }
         }
     },
-    persist: {
-        enabled: true,
-        strategies: [
-            {
-                // 如果要存储在localStorage中
-                storage: localStorage,
-                key: 'globalConfig',
-                paths: ['globalConfig'],
-            },
-        ],
-    },
+    // persist: {
+    //     enabled: true,
+    //     strategies: [
+    //         {
+    //             // 如果要存储在localStorage中
+    //             storage: localStorage,
+    //             key: 'globalConfig',
+    //             paths: ['globalConfig'],
+    //         },
+    //     ],
+    // },
 })

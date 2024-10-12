@@ -145,14 +145,14 @@ export const usePersonConfig = defineStore('person', {
             }
         },
     },
-    persist: {
-        enabled: true,
-        strategies: [
-            {
-                // 如果要存储在localStorage中
-                storage: localStorage,
-                key: 'personConfig',
-            },
-        ],
-    },
+    // persist: {
+    //     enabled: true,
+    //     strategies: [
+    //         {
+    //             // 如果要存储在localStorage中
+    //             storage: localStorage,
+    //             key: 'personConfig',
+    //         },
+    //     ],
+    // },
 });

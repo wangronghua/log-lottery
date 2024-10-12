@@ -56,7 +56,7 @@ const targets = {
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
-let luckyCount = ref(10)
+let luckyCount = ref(47)
 const personPool = ref<IPersonConfig[]>([])
 
 const intervalTimer = ref<any>(null)
@@ -67,20 +67,9 @@ function initTableData() {
     if (allPersonList.value.length <= 0) {
         return
     }
-    const totalCount = rowCount.value * 7
+    
     const orginPersonData = JSON.parse(JSON.stringify(allPersonList.value))
-    const orginPersonLength = orginPersonData.length
-    if (orginPersonLength < totalCount) {
-        const repeatCount = Math.ceil(totalCount / orginPersonLength)
-        // 复制数据
-        for (let i = 0; i < repeatCount; i++) {
-            tableData.value = tableData.value.concat(JSON.parse(JSON.stringify(orginPersonData)))
-        }
-    }
-    else{
-        tableData.value=orginPersonData.slice(0, totalCount)
-    }
-    tableData.value = filterData(tableData.value.slice(0, totalCount), rowCount.value)
+    tableData.value = filterData(orginPersonData, rowCount.value)
 }
 const init = () => {
     const felidView = 40;
@@ -98,7 +87,7 @@ const init = () => {
     renderer.value.setSize(width, height * 0.9)
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
-    renderer.value.domElement.style.paddingTop = '50px'
+    // renderer.value.domElement.style.paddingTop = '50px'
     renderer.value.domElement.style.top = '50%';
     renderer.value.domElement.style.left = '50%';
     renderer.value.domElement.style.transform = 'translate(-50%, -50%)';
@@ -145,9 +134,9 @@ const init = () => {
     createSphereVertices();
     createHelixVertices();
 
+    //长方形排列
     function createTableVertices() {
         const tableLen = tableData.value.length;
-
         for (let i = 0; i < tableLen; i++) {
             const object = new Object3D();
 
@@ -159,6 +148,7 @@ const init = () => {
         }
     }
 
+    //圆球排列
     function createSphereVertices() {
         let i = 0;
         const objLength = objects.value.length;
@@ -205,7 +195,7 @@ const init = () => {
         }
     }
     window.addEventListener('resize', onWindowResize, false);
-    transform(targets.table, 1000)
+    enterLottery();
     render();
 }
 
@@ -243,6 +233,7 @@ const transform = (targets: any[], duration: number) => {
                     luckyTargets.value = [];
                     luckyCardList.value = [];
 
+                    console.log('transform1 set true');
                     canOperate.value = true
                 });
         }
@@ -253,6 +244,7 @@ const transform = (targets: any[], duration: number) => {
             .onUpdate(render)
             .start()
             .onComplete(() => {
+                console.log('transform2 set true');
                 canOperate.value = true
                 resolve('')
             });
@@ -332,6 +324,7 @@ function resetCamera() {
                 .onUpdate(render)
                 .start()
                 .onComplete(() => {
+                    console.log('resetCamera set true');
                     canOperate.value = true
                     // camera.value.lookAt(scene.value.position)
                     camera.value.position.y = 0
@@ -363,6 +356,7 @@ const enterLottery = async () => {
         }
     }
     canOperate.value = false
+    console.log('enterLottery set false');
     await transform(targets.sphere, 1000)
     currentStatus.value = 1
     rollBall(0.1, 2000)
@@ -384,18 +378,18 @@ const startLottery = () => {
         return
     }
     personPool.value = currentPrize.value.isAll ? notThisPrizePersonList.value : notPersonList.value
-    // 验证抽奖人数是否还够
-    if (personPool.value.length < currentPrize.value.count - currentPrize.value.isUsedCount) {
-        toast.open({
-            message: '抽奖人数不够',
-            type: 'warning',
-            position: 'top-right',
-            duration: 10000
-        })
+    // // 验证抽奖人数是否还够
+    // if (personPool.value.length < currentPrize.value.count - currentPrize.value.isUsedCount) {
+    //     toast.open({
+    //         message: '抽奖人数不够',
+    //         type: 'warning',
+    //         position: 'top-right',
+    //         duration: 10000
+    //     })
 
-        return;
-    }
-    luckyCount.value = 10
+    //     return;
+    // }
+    luckyCount.value = 44
     // 自定义抽奖个数
 
     let leftover = currentPrize.value.count - currentPrize.value.isUsedCount
@@ -433,14 +427,14 @@ const stopLottery = async () => {
     clearInterval(intervalTimer.value)
     intervalTimer.value = null
     canOperate.value = false
+    console.log('stop set false');
     rollBall(0, 1)
-
     const windowSize = { width: window.innerWidth, height: window.innerHeight }
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
         let cardIndex = selectCard(luckyCardList.value, tableData.value.length, person.id)
         luckyCardList.value.push(cardIndex)
         let item = objects.value[cardIndex]
-        const { xTable, yTable } = useElementPosition(item, rowCount.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, windowSize, index)
+        const { xTable, yTable } = useElementPosition(item, luckyTargets.value.length, { width: cardSize.value.width , height: cardSize.value.height  }, windowSize, index)
         new TWEEN.Tween(item.position)
             .to({
                 x: xTable,
@@ -449,11 +443,13 @@ const stopLottery = async () => {
             }, 1200)
             .easing(TWEEN.Easing.Exponential.InOut)
             .onStart(() => {
-                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, textSize.value * 2, 'lucky')
+                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cardSize.value.width, height: cardSize.value.height}, textSize.value, 'lucky')
             })
             .start()
             .onComplete(() => {
                 canOperate.value = true
+                
+                console.log('stop set true');
                 currentStatus.value = 3
             })
         new TWEEN.Tween(item.rotation)
@@ -509,14 +505,16 @@ const confettiFire = () => {
             particleCount: 2,
             angle: 60,
             spread: 55,
-            origin: { x: 0 }
+            origin: { x: 0 },
+            gravity:10
         });
         // and launch a few from the right edge
         confetti({
             particleCount: 2,
             angle: 120,
             spread: 55,
-            origin: { x: 1 }
+            origin: { x: 1 },
+            gravity:10
         });
 
         // keep going until we are out of time
@@ -527,24 +525,29 @@ const confettiFire = () => {
     centerFire(0.25, {
         spread: 26,
         startVelocity: 55,
+        gravity:10
     });
     centerFire(0.2, {
         spread: 60,
+        gravity:10
     });
     centerFire(0.35, {
         spread: 100,
         decay: 0.91,
-        scalar: 0.8
+        scalar: 0.8,
+        gravity:10
     });
     centerFire(0.1, {
         spread: 120,
         startVelocity: 25,
         decay: 0.92,
-        scalar: 1.2
+        scalar: 1.2,
+        gravity:10
     });
     centerFire(0.1, {
         spread: 120,
         startVelocity: 45,
+        gravity:10
     });
 }
 const centerFire = (particleRatio: number, opts: any) => {
@@ -556,13 +559,12 @@ const centerFire = (particleRatio: number, opts: any) => {
     });
 }
 
-const setDefaultPersonList = () => {
-    personConfig.setDefaultPersonList()
-    // 刷新页面
-    window.location.reload()
-}
 // 随机替换数据
 const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
+    if(intervalTimer.value!=null){
+        clearInterval(intervalTimer.value)
+    }
+
     // 两秒执行一次
     intervalTimer.value = setInterval(() => {
         // 产生随机数数组
@@ -574,7 +576,9 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
             personRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
         }
         for (let i = 0; i < cardRandomIndexArr.length; i++) {
-            objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
+            if(objects.value.length>cardRandomIndexArr[i]){
+                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
+            }
         }
     }, 200)
 }
@@ -609,6 +613,7 @@ const listenKeyboard = () => {
     })
 }
 onMounted(() => {
+    personConfig.setDefaultPersonList();
     initTableData();
     init();
     animation();
@@ -643,7 +648,6 @@ onUnmounted(() => {
 
         <!-- 选中菜单结构 start-->
         <div id="menu">
-            <button class="btn-end " @click="enterLottery" v-if="currentStatus == 0 && tableData.length > 0">进入抽奖</button>
 
             <div class="start" v-if="currentStatus == 1">
                 <button class="btn-start" @click="startLottery"><strong>开始</strong>
@@ -663,19 +667,6 @@ onUnmounted(() => {
             <div v-if="currentStatus == 3" class="flex justify-center gap-6 enStop">
                 <div class="start">
                     <button class="btn-start" @click="continueLottery"><strong>继续！</strong>
-                        <div id="container-stars">
-                            <div id="stars"></div>
-                        </div>
-
-                        <div id="glow">
-                            <div class="circle"></div>
-                            <div class="circle"></div>
-                        </div>
-                    </button>
-                </div>
-
-                <div class="start">
-                    <button class="btn-cancel" @click="quitLottery"><strong>取消</strong>
                         <div id="container-stars">
                             <div id="stars"></div>
                         </div>

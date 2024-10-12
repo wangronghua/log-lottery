@@ -70,22 +70,133 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
 //     return element
 // }
 
-export const useElementPosition = (element: any, count: number, cardSize: { width: number, height: number }, windowSize: { width: number, height: number }, cardIndex: number) => {
-    let xTable = 0
-    let yTable = 0
-    const centerPosition = {
-        x: 0,
-        y: windowSize.height / 2 - cardSize.height / 2
-    }
-    const index = cardIndex % 5
-    if (index == 0) {
-        xTable = centerPosition.x
-        yTable = centerPosition.y - Math.floor(cardIndex / 5) * (cardSize.height + 60)
-    }
-    else {
-        xTable = index % 2 === 0 ? Math.ceil(index / 2) * (cardSize.width + 100) : -Math.ceil(index / 2) * (cardSize.width + 100)
-        yTable = centerPosition.y - Math.floor(cardIndex / 5) * (cardSize.height + 60)
+// export const useElementPosition=(element:any,count:number,cardSize:{width:number,height:number},windowSize:{width:number,height:number},cardIndex:number)=>{
+//     const centerPosition={
+//         x:-cardSize.width/2,
+//         y:cardSize.height/2
+//     }
+
+//     //几列
+//     let columncount = 10
+//     if(count<20){
+//         columncount=5
+//     }else if(count<40){
+//         columncount=8
+//     }
+//     let colspace = 60
+//     let rowspace = 60
+
+//     const colindex =cardIndex%columncount
+//     const rowindex = Math.floor(cardIndex / columncount)
+//     element.position.x=centerPosition.x + (colindex%2===0 ? -Math.ceil(colindex/2)*(cardSize.width+colspace):Math.ceil(colindex/2)*(cardSize.width+colspace))
+//     element.position.y=centerPosition.y + (rowindex%2===0 ? -Math.ceil(rowindex/2)*(cardSize.height+rowspace):Math.ceil(rowindex/2)*(cardSize.height+rowspace))
+//     return element
+// }
+
+export const useElementPosition=(element:any,count:number,cardSize:{width:number,height:number},windowSize:{width:number,height:number},cardIndex:number)=>{
+
+    // //几列
+    // let columncount = 10
+    // if(count<20){
+    //     columncount=5
+    // }else if(count<40){
+    //     columncount=8
+    // }
+    // //几行
+    // let rowcount = Math.ceil(count / columncount)
+
+    let maxrowcount = 5;//最多5行
+    let maxcolumncount = 10;//最多10列
+
+    let columncount = 10;//如果都没匹配默认10列
+    let rowcount = Math.ceil(count / columncount)
+    for(var i=1;i<=maxrowcount;i++){
+        var tempcolcount = Math.ceil(count/i);
+        if(tempcolcount<i){
+            break;
+        }else if(tempcolcount<=maxcolumncount){
+            columncount = tempcolcount;
+            rowcount = i;
+        }
     }
 
-    return { xTable, yTable }
+
+
+    let colspace = 60
+    let rowspace = 60
+
+    const centerPosition={
+        x:cardSize.width/2+colspace/2,
+        y:cardSize.height/2 + Math.floor(rowcount/2)*(cardSize.height+rowspace)
+    }
+
+    const colindex =cardIndex%columncount
+    const rowindex = Math.floor(cardIndex / columncount)
+    element.position.x=centerPosition.x + (colindex%2===0 ? Math.ceil(colindex/2)*(cardSize.width+colspace):-Math.ceil(colindex/2)*(cardSize.width+colspace))
+    element.position.y=centerPosition.y - rowindex*(cardSize.height+rowspace)
+    return element
 }
+// export const useElementPosition = (element: any, count: number, cardSize: { width: number, height: number }, windowSize: { width: number, height: number }, cardIndex: number) => {
+//     let xTable = 0
+//     let yTable = 0
+//     const centerPosition = {
+//         x: windowSize.width / 2 - cardSize.width / 2,
+//         y: windowSize.height / 2 + cardSize.height
+//     }
+//     xTable = centerPosition.x - Math.floor(cardIndex % 10) * (cardSize.width + 60)
+//     yTable = centerPosition.y - Math.floor(cardIndex / 10) * (cardSize.height + 60)
+
+//     return { xTable, yTable }
+// }
+
+// export const useElementPosition = (element: any, count: number, cardSize: { width: number, height: number }, windowSize: { width: number, height: number }, cardIndex: number) => {
+//     let xTable = 0
+//     let yTable = 0
+
+//     //几列
+//     let columncount = 10
+//     if(count<20){
+//         columncount=5
+//     }else if(count<40){
+//         columncount=8
+//     }
+//     let rowcount = Math.ceil(count / columncount)
+
+//     let rowIndex = Math.ceil(cardIndex / columncount)
+//     let columnIndex = cardIndex % columncount
+
+//     const centerPosition = {
+//         x: (windowSize.width - columncount*cardSize.width - (columncount-1)*60)/2,
+//         y: (windowSize.height - rowcount*cardSize.height - (rowcount-1)*60)/2*-1
+//     }
+//     xTable = centerPosition.x + columnIndex * (cardSize.width + 60)
+//     yTable = centerPosition.y + rowIndex * (cardSize.height + 60)
+
+//     return { xTable, yTable }
+// }
+
+// export const useElementPosition = (element: any, count: number, cardSize: { width: number, height: number }, windowSize: { width: number, height: number }, cardIndex: number) => {
+//     let xTable = 0
+//     let yTable = 0
+
+//     //几列
+//     let columncount = 10
+//     if(count<20){
+//         columncount=5
+//     }else if(count<40){
+//         columncount=8
+//     }
+//     let rowcount = Math.ceil(count / columncount)
+
+//     let rowIndex = Math.ceil(cardIndex / columncount)
+//     let columnIndex = cardIndex % columncount
+
+//     const centerPosition = {
+//         x: (windowSize.width - columncount*cardSize.width - (columncount-1)*60)/2,
+//         y: (windowSize.height - rowcount*cardSize.height - (rowcount-1)*60)/2*-1
+//     }
+//     xTable = centerPosition.x// + columnIndex * (cardSize.width + 60)
+//     yTable = centerPosition.y// + rowIndex * (cardSize.height + 60)
+
+//     return { xTable, yTable }
+// }
