@@ -61,20 +61,16 @@ export const usePersonConfig = defineStore('person', {
             });
         },
         // 添加已中奖人员
-        addAlreadyPersonList(personList: IPersonConfig[], prize: IPrizeConfig | null) {
+        addAlreadyPersonList(personList: IPersonConfig[]) {
             if (personList.length <= 0) {
                 return
             }
             personList.forEach((person: IPersonConfig) => {
                 this.personConfig.allPersonList.map((item: IPersonConfig) => {
-                    if (item.id === person.id && prize != null) {
+                    if (item.id === person.id) {
                         item.isWin = true
-                        // person.isWin = true
-                        item.prizeName.push(prize.name)
                         // person.prizeName += prize.name
                         item.prizeTime.push(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'))
-                        // person.prizeTime = new Date().toString()
-                        item.prizeId.push(prize.id as string)
                     }
 
                     return item

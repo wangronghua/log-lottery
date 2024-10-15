@@ -27,10 +27,8 @@ const toast = useToast();
 const router = useRouter()
 const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
-const prizeConfig = useStore().prizeConfig
 
-const { getAllPersonList: allPersonList, getNotPersonList: notPersonList, getNotThisPrizePersonList: notThisPrizePersonList } = storeToRefs(personConfig)
-const { getCurrentPrize: currentPrize } = storeToRefs(prizeConfig)
+const { getAllPersonList: allPersonList, getNotPersonList: notPersonList } = storeToRefs(personConfig)
 const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize, getRowCount: rowCount } = storeToRefs(globalConfig)
 const tableData = ref<any[]>([])
 // const tableData = ref<any[]>(JSON.parse(JSON.stringify(alreadyPersonList.value)).concat(JSON.parse(JSON.stringify(notPersonList.value))))
@@ -60,7 +58,6 @@ let luckyCount = ref(47)
 const personPool = ref<IPersonConfig[]>([])
 
 const intervalTimer = ref<any>(null)
-// const currentPrizeValue = ref(JSON.parse(JSON.stringify(currentPrize.value)))
 
 // 填充数据，填满七行
 function initTableData() {
@@ -366,8 +363,14 @@ const startLottery = () => {
     if (!canOperate.value) {
         return
     }
+
+    luckyCount.value = 50
+    // 自定义抽奖个数
+
+    personPool.value = notPersonList.value
+
     // 验证是否已抽完全部奖项
-    if (currentPrize.value.isUsed || !currentPrize.value) {
+    if (luckyCount.value <= 0 || personPool.value <=0 ) {
         toast.open({
             message: '抽奖抽完了',
             type: 'warning',
@@ -377,41 +380,18 @@ const startLottery = () => {
 
         return
     }
-    personPool.value = currentPrize.value.isAll ? notThisPrizePersonList.value : notPersonList.value
-    // // 验证抽奖人数是否还够
-    // if (personPool.value.length < currentPrize.value.count - currentPrize.value.isUsedCount) {
-    //     toast.open({
-    //         message: '抽奖人数不够',
-    //         type: 'warning',
-    //         position: 'top-right',
-    //         duration: 10000
-    //     })
 
-    //     return;
-    // }
-    luckyCount.value = 44
-    // 自定义抽奖个数
-
-    let leftover = currentPrize.value.count - currentPrize.value.isUsedCount
-    const customCount = currentPrize.value.separateCount
-    if (customCount && customCount.enable && customCount.countList.length > 0) {
-        for (let i = 0; i < customCount.countList.length; i++) {
-            if (customCount.countList[i].isUsedCount < customCount.countList[i].count) {
-                leftover = customCount.countList[i].count - customCount.countList[i].isUsedCount
-                break;
-            }
-        }
-    }
-    leftover < luckyCount.value ? luckyCount.value = leftover : luckyCount
     for (let i = 0; i < luckyCount.value; i++) {
         if (personPool.value.length > 0) {
             const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
             luckyTargets.value.push(personPool.value[randomIndex])
             personPool.value.splice(randomIndex, 1)
+        }else{
+            break
         }
     }
     toast.open({
-        message: `现在抽取${currentPrize.value.name} ${leftover}人`,
+        message: `现在抽取${luckyCount.value}人`,
         type:'default',
         position: 'top-right',
         duration: 8000
@@ -462,7 +442,7 @@ const stopLottery = async () => {
             .start()
             .onComplete(() => {
                 confettiFire()
-                resetCamera()
+                // resetCamera()
             })
     })
 }
@@ -471,24 +451,8 @@ const continueLottery = async () => {
     if (!canOperate.value) {
         return
     }
-
-    const customCount = currentPrize.value.separateCount
-    if (customCount && customCount.enable && customCount.countList.length > 0) {
-        for (let i = 0; i < customCount.countList.length; i++) {
-            if (customCount.countList[i].isUsedCount < customCount.countList[i].count) {
-                customCount.countList[i].isUsedCount += luckyCount.value
-                break;
-            }
-        }
-    }
-    currentPrize.value.isUsedCount += luckyCount.value
     luckyCount.value = 0
-    if (currentPrize.value.isUsedCount >= currentPrize.value.count) {
-        currentPrize.value.isUsed = true
-        currentPrize.value.isUsedCount = currentPrize.value.count
-    }
-    personConfig.addAlreadyPersonList(luckyTargets.value, currentPrize.value)
-    prizeConfig.updatePrizeConfig(currentPrize.value)
+    personConfig.addAlreadyPersonList(luckyTargets.value)
     await enterLottery()
 }
 const quitLottery = () => {
@@ -626,11 +590,6 @@ onUnmounted(() => {
     intervalTimer.value = null
     window.removeEventListener('keydown', listenKeyboard)
 })
-// watch(() => currentPrize.value.isUsed, (val) => {
-//     if (val) {
-//         currentPrize.value = JSON.parse(JSON.stringify(currentPrize.value))
-//     }
-// })
 </script>
 
 <template>

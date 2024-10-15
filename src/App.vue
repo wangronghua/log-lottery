@@ -19,21 +19,6 @@ const setLocalTheme = (theme: any) => {
     themeChange(theme.name)
 }
 
-// 设置当前奖列表
-const setCurrentPrize = () => {
-    if (prizeList.value.length <= 0) {
-        return
-    }
-    for (let i = 0; i < prizeList.value.length; i++) {
-        if (!prizeList.value[i].isUsed) {
-            prizeConfig.setCurrentPrize(prizeList.value[i])
-
-            break
-        }
-    }
-
-    return
-}
 // 判断是否手机端访问
 const judgeMobile=()=>{
     const ua = navigator.userAgent
@@ -56,7 +41,6 @@ return isChrome||isEdge
 }
 onMounted(() => {
     setLocalTheme(localTheme.value)
-    setCurrentPrize()
     if(judgeMobile()||!judgeChromeOrEdge()){
         tipDialog.value.showModal()
     }

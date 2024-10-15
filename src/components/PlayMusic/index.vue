@@ -94,19 +94,6 @@ watch(currentMusic, (val: any) => {
 
 <template>
     <div class="flex flex-col gap-3" ref="settingRef">
-        <div v-if="route.path.includes('/config')" class="tooltip tooltip-left" data-tip="主页">
-            <div class="flex items-center justify-center w-10 h-10 p-0 m-0 cursor-pointer setting-container bg-slate-500/50 rounded-l-xl hover:bg-slate-500/80 hover:text-blue-400/90"
-                @click="enterHome">
-                <svg-icon name="home"></svg-icon>
-            </div>
-        </div>
-        <div v-else class="tooltip tooltip-left" data-tip="设置/配置">
-            <div class="flex items-center justify-center w-10 h-10 p-0 m-0 cursor-pointer setting-container bg-slate-500/50 rounded-l-xl hover:bg-slate-500/80 hover:text-blue-400/90"
-                @click="enterConfig">
-                <svg-icon name="setting"></svg-icon>
-            </div>
-        </div>
-
         <div class="tooltip tooltip-left" :data-tip="currentMusic.item ? currentMusic.item.name+'\n\r &nbsp; 右键下一曲' : '没有音乐可以播放'">
             <div class="flex items-center justify-center w-10 h-10 p-0 m-0 cursor-pointer setting-container bg-slate-500/50 rounded-l-xl hover:bg-slate-500/80 hover:text-blue-400/90"
                 @click="playMusic(currentMusic.item)" @click.right.prevent="nextPlay">
