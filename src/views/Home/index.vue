@@ -31,7 +31,6 @@ const globalConfig = useStore().globalConfig
 const { getAllPersonList: allPersonList, getNotPersonList: notPersonList } = storeToRefs(personConfig)
 const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize, getRowCount: rowCount } = storeToRefs(globalConfig)
 const tableData = ref<any[]>([])
-// const tableData = ref<any[]>(JSON.parse(JSON.stringify(alreadyPersonList.value)).concat(JSON.parse(JSON.stringify(notPersonList.value))))
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
 const containerRef = ref<HTMLElement>()
@@ -55,16 +54,11 @@ const targets = {
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
 let luckyCount = ref(47)
-const personPool = ref<IPersonConfig[]>([])
 
 const intervalTimer = ref<any>(null)
 
 // 填充数据，填满七行
 function initTableData() {
-    if (allPersonList.value.length <= 0) {
-        return
-    }
-    
     const orginPersonData = JSON.parse(JSON.stringify(allPersonList.value))
     tableData.value = filterData(orginPersonData, rowCount.value)
 }
@@ -364,13 +358,12 @@ const startLottery = () => {
         return
     }
 
-    luckyCount.value = 50
+    luckyCount.value = 48
     // 自定义抽奖个数
 
-    personPool.value = notPersonList.value
-
+    var personPool = notPersonList.value
     // 验证是否已抽完全部奖项
-    if (luckyCount.value <= 0 || personPool.value <=0 ) {
+    if (luckyCount.value <= 0 || personPool.length <=0 ) {
         toast.open({
             message: '抽奖抽完了',
             type: 'warning',
@@ -382,10 +375,10 @@ const startLottery = () => {
     }
 
     for (let i = 0; i < luckyCount.value; i++) {
-        if (personPool.value.length > 0) {
-            const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
-            luckyTargets.value.push(personPool.value[randomIndex])
-            personPool.value.splice(randomIndex, 1)
+        if (personPool.length > 0) {
+            const randomIndex = Math.round(Math.random() * (personPool.length - 1))
+            luckyTargets.value.push(personPool[randomIndex])
+            personPool.splice(randomIndex, 1)
         }else{
             break
         }
@@ -409,12 +402,60 @@ const stopLottery = async () => {
     canOperate.value = false
     console.log('stop set false');
     rollBall(0, 1)
-    const windowSize = { width: window.innerWidth, height: window.innerHeight }
+
+
+    
+    let maxrowcount = 5;//最多5行
+    let maxcolumncount = 10;//最多10列
+
+    let columncount = 10;//如果都没匹配默认10列
+    let rowcount = Math.ceil(luckyTargets.value.length / columncount)
+   
+    for(var i=maxrowcount;i>=1;i--){
+        var tempcolcount = Math.ceil(luckyTargets.value.length/i);
+        if(tempcolcount<=maxcolumncount){
+            columncount = tempcolcount;
+            rowcount = i;
+        }
+        if(tempcolcount>=i+1){
+            break;
+        }
+    }
+    // for(var i=1;i<=maxrowcount;i++){
+    //     var tempcolcount = Math.ceil(luckyTargets.value.length/i);
+    //     if(tempcolcount<i){
+    //         break;
+    //     }else if(tempcolcount<=maxcolumncount){
+    //         columncount = tempcolcount;
+    //         rowcount = i;
+    //     }
+    // }
+
+    // let cwidth = cardSize.value.width
+    // let cheight = cardSize.value.height
+
+    let maxcwidth = Math.floor(2030/(columncount*1.5-0.5));
+    let maxcheight = Math.floor(1240/(rowcount*1.3-0.3));
+
+    let cwidth = 0;
+    let cheight = 0;
+
+    if(maxcwidth*20/14<maxcheight){
+        cwidth = maxcwidth;
+        cheight = maxcwidth*20/14;
+    }else{
+        cheight = maxcheight;
+        cwidth = maxcheight*14/20;
+    }    
+
+    let colspace = cwidth*0.5
+    let rowspace = cheight*0.3
+
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
         let cardIndex = selectCard(luckyCardList.value, tableData.value.length, person.id)
         luckyCardList.value.push(cardIndex)
         let item = objects.value[cardIndex]
-        const { xTable, yTable } = useElementPosition(item, luckyTargets.value.length, { width: cardSize.value.width , height: cardSize.value.height  }, windowSize, index)
+        const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
         new TWEEN.Tween(item.position)
             .to({
                 x: xTable,
@@ -423,7 +464,7 @@ const stopLottery = async () => {
             }, 1200)
             .easing(TWEEN.Easing.Exponential.InOut)
             .onStart(() => {
-                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cardSize.value.width, height: cardSize.value.height}, textSize.value, 'lucky')
+                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, textSize.value, 'lucky')
             })
             .start()
             .onComplete(() => {

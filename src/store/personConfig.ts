@@ -4,6 +4,7 @@ import { IPrizeConfig } from '@/types/storeType';
 import { defaultPersonList } from './data'
 import { usePrizeConfig } from './prizeConfig';
 import dayjs from 'dayjs'
+import { debug } from 'console';
 export const usePersonConfig = defineStore('person', {
     state() {
         return {

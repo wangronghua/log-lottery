@@ -93,41 +93,14 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
 //     return element
 // }
 
-export const useElementPosition=(element:any,count:number,cardSize:{width:number,height:number},windowSize:{width:number,height:number},cardIndex:number)=>{
-
-    // //几列
-    // let columncount = 10
-    // if(count<20){
-    //     columncount=5
-    // }else if(count<40){
-    //     columncount=8
-    // }
-    // //几行
-    // let rowcount = Math.ceil(count / columncount)
-
-    let maxrowcount = 5;//最多5行
-    let maxcolumncount = 10;//最多10列
-
-    let columncount = 10;//如果都没匹配默认10列
-    let rowcount = Math.ceil(count / columncount)
-    for(var i=1;i<=maxrowcount;i++){
-        var tempcolcount = Math.ceil(count/i);
-        if(tempcolcount<i){
-            break;
-        }else if(tempcolcount<=maxcolumncount){
-            columncount = tempcolcount;
-            rowcount = i;
-        }
-    }
-
-
-
-    let colspace = 60
-    let rowspace = 60
-
+export const useElementPosition=(element:any,columncount:number,rowcount:number,colspace:number,rowspace:number,cardSize:{width:number,height:number},cardIndex:number)=>{
     const centerPosition={
         x:cardSize.width/2+colspace/2,
-        y:cardSize.height/2 + Math.floor(rowcount/2)*(cardSize.height+rowspace)
+        y:rowcount%2==0?(rowcount*(cardSize.height+rowspace)/2 - 0.5*rowspace):(cardSize.height/2 + Math.floor(rowcount/2)*(cardSize.height+rowspace))   //cardSize.height/2 + Math.floor(rowcount/2)*(cardSize.height+rowspace)
+    }
+    centerPosition.y=centerPosition.y-rowspace
+    if(rowcount<5){
+        console.log({index:cardIndex,columncount:columncount,rowcount:rowcount,colspace:colspace,rowspace:rowspace,cardSize:cardSize})
     }
 
     const colindex =cardIndex%columncount
