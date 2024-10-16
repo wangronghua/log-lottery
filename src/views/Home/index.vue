@@ -358,7 +358,7 @@ const startLottery = () => {
         return
     }
 
-    luckyCount.value = 20 // 48   36  30   25  24  21
+    luckyCount.value = 1 // 48   36  30   25  24  21  20  18  15  12  10 ...
     // 自定义抽奖个数
 
     var personPool = notPersonList.value
