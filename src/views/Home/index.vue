@@ -29,7 +29,7 @@ const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 
 const { getAllPersonList: allPersonList, getNotPersonList: notPersonList } = storeToRefs(personConfig)
-const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize, getRowCount: rowCount } = storeToRefs(globalConfig)
+const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize } = storeToRefs(globalConfig)
 const tableData = ref<any[]>([])
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
@@ -60,7 +60,7 @@ const intervalTimer = ref<any>(null)
 // 填充数据，填满七行
 function initTableData() {
     const orginPersonData = JSON.parse(JSON.stringify(allPersonList.value))
-    tableData.value = filterData(orginPersonData, rowCount.value)
+    tableData.value = orginPersonData
 }
 const init = () => {
     const felidView = 40;
@@ -116,6 +116,7 @@ const init = () => {
         object.position.x = Math.random() * 4000 - 2000;
         object.position.y = Math.random() * 4000 - 2000;
         object.position.z = Math.random() * 4000 - 2000;
+        object.userData["id"]= tableData.value[i].uid
         scene.value.add(object);
 
         objects.value.push(object);
@@ -127,16 +128,16 @@ const init = () => {
 
     //长方形排列
     function createTableVertices() {
-        const tableLen = tableData.value.length;
-        for (let i = 0; i < tableLen; i++) {
-            const object = new Object3D();
+        // const tableLen = tableData.value.length;
+        // for (let i = 0; i < tableLen; i++) {
+        //     const object = new Object3D();
 
-            object.position.x = tableData.value[i].x * (cardSize.value.width + 40) - rowCount.value * 90;
-            object.position.y = -tableData.value[i].y * (cardSize.value.height + 20) + 1000;
-            object.position.z = 0;
+        //     object.position.x = tableData.value[i].x * (cardSize.value.width + 40) - rowCount.value * 90;
+        //     object.position.y = -tableData.value[i].y * (cardSize.value.height + 20) + 1000;
+        //     object.position.z = 0;
 
-            targets.table.push(object);
-        }
+        //     targets.table.push(object);
+        // }
     }
 
     //圆球排列
@@ -339,13 +340,13 @@ const enterLottery = async () => {
     if (!intervalTimer.value) {
         randomBallData()
     }
-    if (patternList.value.length) {
-        for(let i=0;i<patternList.value.length;i++){
-            if(i<rowCount.value*7){
-                objects.value[patternList.value[i]-1].element.style.backgroundColor = rgba(cardColor.value, Math.random() * 0.5 + 0.25)
-            }
-        }
-    }
+    // if (patternList.value.length) {
+    //     for(let i=0;i<patternList.value.length;i++){//objects.value
+    //         if(i<rowCount.value*7){
+    //             objects.value[patternList.value[i]-1].element.style.backgroundColor = rgba(cardColor.value, Math.random() * 0.5 + 0.25)
+    //         }
+    //     }
+    // }
     canOperate.value = false
     console.log('enterLottery set false');
     await transform(targets.sphere, 1000)
@@ -358,7 +359,7 @@ const startLottery = () => {
         return
     }
 
-    luckyCount.value = 1 // 48   36  30   25  24  21  20  18  15  12  10 ...
+    luckyCount.value = 50 // 48   36  30   25  24  21  20  18  15  12  10 ...
     // 自定义抽奖个数
 
     var personPool = notPersonList.value
@@ -636,13 +637,7 @@ onUnmounted(() => {
 <template>
     <div class="absolute z-10 flex flex-col items-center justify-center -translate-x-1/2 left-1/2">
         <h2 class="pt-12 m-0 mb-12 font-mono tracking-wide text-center leading-12 header-title"
-            :style="{ fontSize: textSize * 1.5 + 'px', color: textColor }">{{ topTitle }}</h2>
-        <div class="flex gap-3">
-            <button v-if="tableData.length <= 0" class="cursor-pointer btn btn-outline btn-secondary btn-lg"
-                @click="router.push('config')">暂无人员信息，前往导入</button>
-            <button v-if="tableData.length <= 0" class="cursor-pointer btn btn-outline btn-secondary btn-lg"
-                @click="setDefaultPersonList">使用默认数据</button>
-        </div>
+            :style="{ fontSize: textSize * 1.5 + 'px', color: textColor }">周年大放纵 媛分双倍送</h2>
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
 
