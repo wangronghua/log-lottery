@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia';
 import { IPersonConfig } from '@/types/storeType';
-import { IPrizeConfig } from '@/types/storeType';
-import { defaultPersonList } from './data'
 import { usePrizeConfig } from './prizeConfig';
 import dayjs from 'dayjs'
 import { debug } from 'console';
@@ -128,10 +126,6 @@ export const usePersonConfig = defineStore('person', {
                 item.prizeTime = [];
                 item.prizeId = []
             });
-            this.personConfig.alreadyPersonList = [];
-        },
-        setDefaultPersonList() {
-            this.personConfig.allPersonList = defaultPersonList;
             this.personConfig.alreadyPersonList = [];
         },
         // 重置所有配置

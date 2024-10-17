@@ -53,7 +53,7 @@ const targets = {
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
-const luckyCount = ref(5)
+const luckyCount = ref(1)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])

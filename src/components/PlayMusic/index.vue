@@ -61,9 +61,16 @@ const nextPlay = () => {
         globalConfig.setCurrentMusic(localMusicList.value[index],false)
     }
 }
-// 监听播放成后开始下一首
+const continuePlay = () => {
+    globalConfig.setCurrentMusic(currentMusic.value.item,false)
+}
 const onPlayEnd = () => {
-    audio.value.addEventListener('ended', nextPlay)
+    // 监听播放成后开始下一首
+    // audio.value.addEventListener('ended', nextPlay)
+    
+    // 监听播放成后继续播放这首
+    audio.value.addEventListener('ended', continuePlay)
+    console.log('播放结束了');
 }
 
 const enterConfig = () => {
