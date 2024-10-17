@@ -33,9 +33,9 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
         target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
     })
     element.children[0].style.fontSize = textSize * 0.5 + 'px';
-    if (person.uid) {
-        element.children[0].textContent = person.uid;
-    }
+    // if (person.uid) {
+    //     element.children[0].textContent = person.uid;
+    // }
 
     element.children[1].style.fontSize = textSize + 'px'
     element.children[1].style.lineHeight = textSize * 3 + 'px'
@@ -45,9 +45,9 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     }
 
     element.children[2].style.fontSize = textSize * 0.5 + 'px'
-    if (person.department || person.identity) {
-        element.children[2].innerHTML = `${person.department ? person.department : ''}<br/>${person.identity ? person.identity : ''}`
-    }
+    // if (person.department || person.identity) {
+    //     element.children[2].innerHTML = `${person.department ? person.department : ''}<br/>${person.identity ? person.identity : ''}`
+    // }
 
     return element
 }

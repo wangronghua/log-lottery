@@ -28,9 +28,8 @@ const router = useRouter()
 const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 
-const { getAllPersonList: allPersonList, getNotPersonList: notPersonList } = storeToRefs(personConfig)
+const { getNotPersonList: notPersonList } = storeToRefs(personConfig)
 const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize } = storeToRefs(globalConfig)
-const tableData = ref<any[]>([])
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
 const containerRef = ref<HTMLElement>()
@@ -50,6 +49,8 @@ const targets = {
     table: <any[]>[],
     sphere: <any[]>[]
 };
+const notPrizeDrawList = ref<any[]>([])
+const hasPrizeDrawList = ref<any[]>([])
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -58,9 +59,10 @@ let luckyCount = ref(47)
 const intervalTimer = ref<any>(null)
 
 // 填充数据，填满七行
-function initTableData() {
-    const orginPersonData = JSON.parse(JSON.stringify(allPersonList.value))
-    tableData.value = orginPersonData
+async function initTableData() {
+    var data = await getLoadData();//获取已抽奖和未抽奖用户
+    notPrizeDrawList.value = data.notPrizeDraw
+    hasPrizeDrawList.value = data.hasPrizeDraw
 }
 const init = () => {
     const felidView = 40;
@@ -91,32 +93,37 @@ const init = () => {
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
 
-    const tableLen = tableData.value.length
+    const tableLen = notPrizeDrawList.value.length
     for (let i = 0; i < tableLen; i++) {
         let element = document.createElement('div');
         element.className = 'element-card';
 
-        const number = document.createElement('div');
-        number.className = 'card-id';
-        number.textContent = tableData.value[i].uid;
-        element.appendChild(number);
+        let imgc = document.createElement('div');
+        imgc.className = 'card-headpic-c';
+        const headpic = document.createElement('img');
+        headpic.className = 'card-headpic';
+        headpic.src = notPrizeDrawList.value[i].headPic;
+        imgc.appendChild(headpic);
+        element.appendChild(imgc);
+
+        // element.append("<div class='card-headpic-c'><img src='"+notPrizeDrawList.value[i].headPic+"' class='card-headpic'/></div>");
 
         const symbol = document.createElement('div');
         symbol.className = 'card-name';
-        symbol.textContent = tableData.value[i].name;
+        symbol.textContent = notPrizeDrawList.value[i].name;
         element.appendChild(symbol);
+        
+        const prizeName = document.createElement('div');
+        prizeName.className = 'card-prize';
+        prizeName.innerHTML = `${notPrizeDrawList.value[i].prizeName||''}`;
+        element.appendChild(prizeName);
 
-        const detail = document.createElement('div');
-        detail.className = 'card-detail';
-        detail.innerHTML = `${tableData.value[i].department}<br/>${tableData.value[i].identity}`;
-        element.appendChild(detail);
-
-        element = useElementStyle(element, tableData.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value)
+        element = useElementStyle(element, notPrizeDrawList.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value)
         const object = new CSS3DObject(element);
         object.position.x = Math.random() * 4000 - 2000;
         object.position.y = Math.random() * 4000 - 2000;
         object.position.z = Math.random() * 4000 - 2000;
-        object.userData["id"]= tableData.value[i].uid
+        object.userData["uid"]= notPrizeDrawList.value[i].uid
         scene.value.add(object);
 
         objects.value.push(object);
@@ -128,16 +135,6 @@ const init = () => {
 
     //长方形排列
     function createTableVertices() {
-        // const tableLen = tableData.value.length;
-        // for (let i = 0; i < tableLen; i++) {
-        //     const object = new Object3D();
-
-        //     object.position.x = tableData.value[i].x * (cardSize.value.width + 40) - rowCount.value * 90;
-        //     object.position.y = -tableData.value[i].y * (cardSize.value.height + 20) + 1000;
-        //     object.position.z = 0;
-
-        //     targets.table.push(object);
-        // }
     }
 
     //圆球排列
@@ -263,6 +260,7 @@ function animation() {
 
 // // 旋转的动画
 function rollBall(rotateY: number, duration: number) {
+    // return;
     TWEEN.removeAll();
 
     return new Promise((resolve) => {
@@ -453,7 +451,7 @@ const stopLottery = async () => {
     let rowspace = cheight*0.3
 
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
-        let cardIndex = selectCard(luckyCardList.value, tableData.value.length, person.id)
+        let cardIndex = selectCard(luckyCardList.value, notPrizeDrawList.value.length, person.id)
         luckyCardList.value.push(cardIndex)
         let item = objects.value[cardIndex]
         const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
@@ -578,12 +576,12 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
         const cardRandomIndexArr: number[] = []
         const personRandomIndexArr: number[] = []
         for (let i = 0; i < indexLength; i++) {
-            cardRandomIndexArr.push(Math.round(Math.random() * (tableData.value.length - 1)))
-            personRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
+            cardRandomIndexArr.push(Math.round(Math.random() * (notPrizeDrawList.value.length - 1)))
+            personRandomIndexArr.push(Math.round(Math.random() * (notPrizeDrawList.value.length - 1)))
         }
         for (let i = 0; i < cardRandomIndexArr.length; i++) {
             if(objects.value.length>cardRandomIndexArr[i]){
-                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
+                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, notPrizeDrawList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
             }
         }
     }, 200)
@@ -618,9 +616,9 @@ const listenKeyboard = () => {
         }
     })
 }
-onMounted(() => {
+onMounted(async () => {
     personConfig.setDefaultPersonList();
-    initTableData();
+    await initTableData();
     init();
     animation();
     containerRef.value!.style.color = `${textColor}`
@@ -632,6 +630,10 @@ onUnmounted(() => {
     intervalTimer.value = null
     window.removeEventListener('keydown', listenKeyboard)
 })
+
+const getLoadData = async ()=>{
+    return {"notPrizeDraw":[{"uid": "1","name": "姓名1","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "2","name": "姓名2","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "3","name": "姓名3","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "4","name": "姓名4","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "5","name": "姓名5","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "6","name": "姓名6","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "7","name": "姓名7","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "8","name": "姓名8","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "9","name": "姓名9","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "10","name": "姓名10","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "11","name": "姓名11","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "12","name": "姓名12","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "13","name": "姓名13","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "14","name": "姓名14","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "15","name": "姓名15","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "16","name": "姓名16","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "17","name": "姓名17","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "18","name": "姓名18","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "19","name": "姓名19","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "20","name": "姓名20","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "21","name": "姓名21","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "22","name": "姓名22","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "23","name": "姓名23","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "24","name": "姓名24","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "25","name": "姓名25","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "26","name": "姓名26","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "27","name": "姓名27","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "28","name": "姓名28","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "29","name": "姓名29","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "30","name": "姓名30","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "31","name": "姓名31","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "32","name": "姓名32","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "33","name": "姓名33","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "34","name": "姓名34","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "35","name": "姓名35","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "36","name": "姓名36","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "37","name": "姓名37","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "38","name": "姓名38","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "39","name": "姓名39","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "40","name": "姓名40","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "41","name": "姓名41","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "42","name": "姓名42","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "43","name": "姓名43","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "44","name": "姓名44","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "45","name": "姓名45","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "46","name": "姓名46","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "47","name": "姓名47","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "48","name": "姓名48","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "49","name": "姓名49","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "50","name": "姓名50","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "51","name": "姓名51","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"}],"hasPrizeDraw": []}
+}
 </script>
 
 <template>
