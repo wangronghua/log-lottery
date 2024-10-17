@@ -2,28 +2,26 @@
     cursor: default;
     text-align: center;
     user-select: none;
-    .card-id {
-        position: absolute;
-        top: 20px;
-        right: 20px;
+    .card-headpic-c{
+        border-radius:50%; overflow:hidden;border: 3px solid #ccc;
+        width:40%;
+        margin:auto;
     }
-
     .card-name {
         position: absolute;
-        top: 40px;
-        left: 0px;
+        top: 30%;
+        left: 0;
         right: 0;
         font-weight: bold;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-    .card-detail {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 15px;
+    .card-headpic{
+        width:100%; height:100%;object-fit: cover;
+    }
+    .card-prize{
+        display: none;
     }
 }
 
@@ -35,16 +33,15 @@
         border: 1px solid linear-gradient(-45deg, #e81cff 0%, #40c9ff 100%);
     }
 
-    .card-id {
-        position: absolute;
-        top: 20px;
-        right: 20px;
+    .card-headpic-c{
+        border-radius:50%; overflow:hidden;border: 3px solid #ccc;
+        width:40%;
+        margin:auto;
     }
-
     .card-name {
         position: absolute;
-        top: 40px;
-        left: 0px;
+        top: 30%;
+        left: 0;
         right: 0;
         font-weight: bold;
         white-space: nowrap;
@@ -54,23 +51,17 @@
         // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
         // animation-delay: 0.6s;
     }
-
-    .card-detail {
+    .card-headpic{
+        width:100%; height:100%;object-fit: cover;
+    }
+    .card-prize{
         position: absolute;
+        top:60%;
         left: 0;
         right: 0;
-        bottom: 15px;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
-
-    .card-prize{
-        display: none;
-    }
-}
-.card-headpic-c{
-    border-radius:50%; overflow:hidden;border: 3px solid #ccc;
-    width:40%;
-    margin:auto;
-}
-.card-headpic{
-    width:100%; height:100%;object-fit: cover;
 }

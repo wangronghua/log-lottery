@@ -28,7 +28,7 @@ const router = useRouter()
 const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 
-const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize } = storeToRefs(globalConfig)
+const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize } = storeToRefs(globalConfig)
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
 const containerRef = ref<HTMLElement>()
@@ -51,7 +51,7 @@ const targets = {
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
-const luckyCount = ref(50)
+const luckyCount = ref(4)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -126,7 +126,7 @@ const init = () => {
         prizeName.innerHTML = `${allPersonList.value[i].prizeName||''}`;
         element.appendChild(prizeName);
 
-        element = useElementStyle(element, allPersonList.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value)
+        element = useElementStyle(element, allPersonList.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value)
         const object = new CSS3DObject(element);
         object.position.x = Math.random() * 4000 - 2000;
         object.position.y = Math.random() * 4000 - 2000;
@@ -224,7 +224,7 @@ const transform = (targets: any[], duration: number) => {
                     if (luckyCardList.value.length) {
                         luckyCardList.value.forEach((cardIndex: any) => {
                             const item = objects.value[cardIndex]
-                            useElementStyle(item.element, {} as any, i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value, 'sphere')
+                            useElementStyle(item.element, {} as any, i, patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
                         })
                     }
                     luckyTargets.value = [];
@@ -362,7 +362,7 @@ const startLottery = () => {
         return
     }
 
-    luckyCount.value = Math.min(50,notPrizeDrawList.value.length) // 48   36  30   25  24  21  20  18  15  12  10 ...
+    luckyCount.value = Math.min(luckyCount.value,notPrizeDrawList.value.length) // 48   36  30   25  24  21  20  18  15  12  10 ...
     // 自定义抽奖个数
 
     // 验证是否已抽完全部奖项
@@ -406,8 +406,7 @@ const stopLottery = async () => {
         }
     }
 
-    //todo：调抽奖接口
-    console.log(uidlist);
+    //todo：调抽奖接口 uidlist
 
     rollBall(0, 1)
 
@@ -460,7 +459,7 @@ const stopLottery = async () => {
             }, 1200)
             .easing(TWEEN.Easing.Exponential.InOut)
             .onStart(() => {
-                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, textSize.value, 'lucky')
+                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
             })
             .start()
             .onComplete(() => {
@@ -575,7 +574,7 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
         }
         for (let i = 0; i < cardRandomIndexArr.length; i++) {
             if(objects.value.length>cardRandomIndexArr[i]){
-                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
+                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
             }
         }
     }, 200)
@@ -632,7 +631,7 @@ const getLoadData = async ()=>{
 <template>
     <div class="absolute z-10 flex flex-col items-center justify-center -translate-x-1/2 left-1/2">
         <h2 class="pt-12 m-0 mb-12 font-mono tracking-wide text-center leading-12 header-title"
-            :style="{ fontSize: textSize * 1.5 + 'px', color: textColor }">周年大放纵 媛分双倍送</h2>
+            :style="{ fontSize: '45px', color: textColor }">周年大放纵 媛分双倍送</h2>
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
 

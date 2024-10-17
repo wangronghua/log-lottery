@@ -1,7 +1,10 @@
 import { rgba } from '@/utils/color'
 import { IPersonConfig } from '@/types/storeType'
 
-export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, textSize: number, mod: 'default' | 'lucky'|'sphere' = 'default') => {
+export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
+    let rate = Math.ceil(cardSize.width/140)
+    let textSize = 30 * rate;
+
     if (patternList.includes(index+1)&&mod=='default') {
         element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
     }
@@ -38,16 +41,18 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     // }
     //0 头像，1昵称，2奖品
     element.children[1].style.fontSize = textSize + 'px'
-    element.children[1].style.lineHeight = textSize * 3 + 'px'
+    element.children[1].style.lineHeight = textSize * 2 + 'px'
     element.children[1].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
     if (person.name) {
         element.children[1].textContent = person.name
     }
+    
+    element.children[2].style.fontSize = textSize + 'px'
+    element.children[2].style.lineHeight = textSize * 2 + 'px'
+    element.children[2].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
     if (person.prizeName) {
         element.children[2].textContent = person.prizeName
     }
-
-    element.children[2].style.fontSize = textSize * 0.5 + 'px'
     // if (person.department || person.identity) {
     //     element.children[2].innerHTML = `${person.department ? person.department : ''}<br/>${person.identity ? person.identity : ''}`
     // }
