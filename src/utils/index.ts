@@ -31,10 +31,10 @@ export const addOtherInfo = (personList: any[]) => {
     return personList
 }
 
-export const selectCard = (cardIndexArr: number[], tableLength: number, personId: number): number => {
+export const selectCard = (cardIndexArr: number[], tableLength: number): number => {
     const cardIndex = Math.round(Math.random() * (tableLength - 1));
     if (cardIndexArr.includes(cardIndex)) {
-        return selectCard(cardIndexArr, tableLength, personId)
+        return selectCard(cardIndexArr, tableLength)
     }
 
     return cardIndex

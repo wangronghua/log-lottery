@@ -28,7 +28,6 @@ const router = useRouter()
 const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 
-const { getNotPersonList: notPersonList } = storeToRefs(personConfig)
 const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize } = storeToRefs(globalConfig)
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
@@ -51,6 +50,8 @@ const targets = {
 };
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
+const allPersonList = ref<any[]>([])
+const luckyCount = ref(50)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -62,6 +63,14 @@ async function initTableData() {
     var data = await getLoadData();//获取已抽奖和未抽奖用户
     notPrizeDrawList.value = data.notPrizeDraw
     hasPrizeDrawList.value = data.hasPrizeDraw
+
+    
+    for (let i = 0; i < notPrizeDrawList.value.length; i++) {
+        allPersonList.value.push(notPrizeDrawList.value[i]);
+    }
+    for (let i = 0; i < hasPrizeDrawList.value.length; i++) {
+        allPersonList.value.push(hasPrizeDrawList.value[i]);
+    }
 }
 const init = () => {
     const felidView = 40;
@@ -92,7 +101,7 @@ const init = () => {
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
 
-    const tableLen = notPrizeDrawList.value.length
+    const tableLen = allPersonList.value.length
     for (let i = 0; i < tableLen; i++) {
         let element = document.createElement('div');
         element.className = 'element-card';
@@ -101,28 +110,28 @@ const init = () => {
         imgc.className = 'card-headpic-c';
         const headpic = document.createElement('img');
         headpic.className = 'card-headpic';
-        headpic.src = notPrizeDrawList.value[i].headPic;
+        headpic.src = allPersonList.value[i].headPic;
         imgc.appendChild(headpic);
         element.appendChild(imgc);
 
-        // element.append("<div class='card-headpic-c'><img src='"+notPrizeDrawList.value[i].headPic+"' class='card-headpic'/></div>");
+        // element.append("<div class='card-headpic-c'><img src='"+allPersonList.value[i].headPic+"' class='card-headpic'/></div>");
 
         const symbol = document.createElement('div');
         symbol.className = 'card-name';
-        symbol.textContent = notPrizeDrawList.value[i].name;
+        symbol.textContent = allPersonList.value[i].name;
         element.appendChild(symbol);
         
         const prizeName = document.createElement('div');
         prizeName.className = 'card-prize';
-        prizeName.innerHTML = `${notPrizeDrawList.value[i].prizeName||''}`;
+        prizeName.innerHTML = `${allPersonList.value[i].prizeName||''}`;
         element.appendChild(prizeName);
 
-        element = useElementStyle(element, notPrizeDrawList.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value)
+        element = useElementStyle(element, allPersonList.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value)
         const object = new CSS3DObject(element);
         object.position.x = Math.random() * 4000 - 2000;
         object.position.y = Math.random() * 4000 - 2000;
         object.position.z = Math.random() * 4000 - 2000;
-        object.userData["uid"]= notPrizeDrawList.value[i].uid
+        object.userData["uid"]= allPersonList.value[i].uid
         scene.value.add(object);
 
         objects.value.push(object);
@@ -221,7 +230,6 @@ const transform = (targets: any[], duration: number) => {
                     luckyTargets.value = [];
                     luckyCardList.value = [];
 
-                    console.log('transform1 set true');
                     canOperate.value = true
                 });
         }
@@ -232,7 +240,6 @@ const transform = (targets: any[], duration: number) => {
             .onUpdate(render)
             .start()
             .onComplete(() => {
-                console.log('transform2 set true');
                 canOperate.value = true
                 resolve('')
             });
@@ -313,7 +320,6 @@ function resetCamera() {
                 .onUpdate(render)
                 .start()
                 .onComplete(() => {
-                    console.log('resetCamera set true');
                     canOperate.value = true
                     // camera.value.lookAt(scene.value.position)
                     camera.value.position.y = 0
@@ -345,23 +351,22 @@ const enterLottery = async () => {
     //     }
     // }
     canOperate.value = false
-    console.log('enterLottery set false');
     await transform(targets.sphere, 1000)
     currentStatus.value = 1
     rollBall(0.1, 2000)
 }
+
 // 开始抽奖
 const startLottery = () => {
     if (!canOperate.value) {
         return
     }
 
-    var luckyCount = 50 // 48   36  30   25  24  21  20  18  15  12  10 ...
+    luckyCount.value = Math.min(50,notPrizeDrawList.value.length) // 48   36  30   25  24  21  20  18  15  12  10 ...
     // 自定义抽奖个数
 
-    var personPool = notPersonList.value
     // 验证是否已抽完全部奖项
-    if (luckyCount <= 0 || personPool.length <=0 ) {
+    if (luckyCount.value <= 0) {
         toast.open({
             message: '抽奖抽完了',
             type: 'warning',
@@ -371,18 +376,8 @@ const startLottery = () => {
 
         return
     }
-
-    for (let i = 0; i < luckyCount; i++) {
-        if (personPool.length > 0) {
-            const randomIndex = Math.round(Math.random() * (personPool.length - 1))
-            luckyTargets.value.push(personPool[randomIndex])
-            personPool.splice(randomIndex, 1)
-        }else{
-            break
-        }
-    }
     toast.open({
-        message: `现在抽取${luckyCount}人`,
+        message: `现在抽取${luckyCount.value}人`,
         type:'default',
         position: 'top-right',
         duration: 8000
@@ -398,7 +393,22 @@ const stopLottery = async () => {
     clearInterval(intervalTimer.value)
     intervalTimer.value = null
     canOperate.value = false
-    console.log('stop set false');
+
+    var uidlist = [];
+    for (let i = 0; i < luckyCount.value; i++) {
+        if (notPrizeDrawList.value.length > 0) {
+            const randomIndex = Math.round(Math.random() * (notPrizeDrawList.value.length - 1))
+            luckyTargets.value.push(notPrizeDrawList.value[randomIndex])
+            uidlist.push(notPrizeDrawList.value[randomIndex].uid);
+            notPrizeDrawList.value.splice(randomIndex, 1)
+        }else{
+            break
+        }
+    }
+
+    //todo：调抽奖接口
+    console.log(uidlist);
+
     rollBall(0, 1)
 
 
@@ -419,18 +429,6 @@ const stopLottery = async () => {
             break;
         }
     }
-    // for(var i=1;i<=maxrowcount;i++){
-    //     var tempcolcount = Math.ceil(luckyTargets.value.length/i);
-    //     if(tempcolcount<i){
-    //         break;
-    //     }else if(tempcolcount<=maxcolumncount){
-    //         columncount = tempcolcount;
-    //         rowcount = i;
-    //     }
-    // }
-
-    // let cwidth = cardSize.value.width
-    // let cheight = cardSize.value.height
 
     let maxcwidth = Math.floor(2030/(columncount*1.5-0.5));
     let maxcheight = Math.floor(1240/(rowcount*1.3-0.3));
@@ -450,7 +448,7 @@ const stopLottery = async () => {
     let rowspace = cheight*0.3
 
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
-        let cardIndex = selectCard(luckyCardList.value, notPrizeDrawList.value.length, person.id)
+        let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
         luckyCardList.value.push(cardIndex)
         let item = objects.value[cardIndex]
         const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
@@ -468,7 +466,6 @@ const stopLottery = async () => {
             .onComplete(() => {
                 canOperate.value = true
                 
-                console.log('stop set true');
                 currentStatus.value = 3
             })
         new TWEEN.Tween(item.rotation)
@@ -490,7 +487,6 @@ const continueLottery = async () => {
     if (!canOperate.value) {
         return
     }
-    personConfig.addAlreadyPersonList(luckyTargets.value)
     await enterLottery()
 }
 const quitLottery = () => {
@@ -574,12 +570,12 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
         const cardRandomIndexArr: number[] = []
         const personRandomIndexArr: number[] = []
         for (let i = 0; i < indexLength; i++) {
-            cardRandomIndexArr.push(Math.round(Math.random() * (notPrizeDrawList.value.length - 1)))
-            personRandomIndexArr.push(Math.round(Math.random() * (notPrizeDrawList.value.length - 1)))
+            cardRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
+            personRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
         }
         for (let i = 0; i < cardRandomIndexArr.length; i++) {
             if(objects.value.length>cardRandomIndexArr[i]){
-                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, notPrizeDrawList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
+                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
             }
         }
     }, 200)
@@ -615,7 +611,6 @@ const listenKeyboard = () => {
     })
 }
 onMounted(async () => {
-    personConfig.setDefaultPersonList();
     await initTableData();
     init();
     animation();
@@ -630,7 +625,7 @@ onUnmounted(() => {
 })
 
 const getLoadData = async ()=>{
-    return {"notPrizeDraw":[{"uid": "1","name": "姓名1","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "2","name": "姓名2","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "3","name": "姓名3","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "4","name": "姓名4","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "5","name": "姓名5","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "6","name": "姓名6","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "7","name": "姓名7","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "8","name": "姓名8","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "9","name": "姓名9","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "10","name": "姓名10","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "11","name": "姓名11","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "12","name": "姓名12","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "13","name": "姓名13","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "14","name": "姓名14","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "15","name": "姓名15","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "16","name": "姓名16","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "17","name": "姓名17","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "18","name": "姓名18","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "19","name": "姓名19","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "20","name": "姓名20","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "21","name": "姓名21","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "22","name": "姓名22","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "23","name": "姓名23","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "24","name": "姓名24","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "25","name": "姓名25","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "26","name": "姓名26","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "27","name": "姓名27","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "28","name": "姓名28","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "29","name": "姓名29","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "30","name": "姓名30","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "31","name": "姓名31","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "32","name": "姓名32","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "33","name": "姓名33","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "34","name": "姓名34","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "35","name": "姓名35","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "36","name": "姓名36","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "37","name": "姓名37","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "38","name": "姓名38","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "39","name": "姓名39","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "40","name": "姓名40","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "41","name": "姓名41","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "42","name": "姓名42","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "43","name": "姓名43","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "44","name": "姓名44","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "45","name": "姓名45","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "46","name": "姓名46","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "47","name": "姓名47","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "48","name": "姓名48","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "49","name": "姓名49","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "50","name": "姓名50","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "51","name": "姓名51","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"}],"hasPrizeDraw": []}
+    return {"notPrizeDraw":[{"uid": "1","name": "姓名1","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "2","name": "姓名2","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "3","name": "姓名3","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "4","name": "姓名4","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "5","name": "姓名5","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "6","name": "姓名6","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "7","name": "姓名7","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "8","name": "姓名8","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "9","name": "姓名9","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "10","name": "姓名10","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "11","name": "姓名11","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "12","name": "姓名12","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "13","name": "姓名13","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "14","name": "姓名14","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "15","name": "姓名15","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "16","name": "姓名16","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "17","name": "姓名17","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "18","name": "姓名18","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "19","name": "姓名19","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "20","name": "姓名20","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "21","name": "姓名21","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "22","name": "姓名22","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "23","name": "姓名23","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "24","name": "姓名24","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "25","name": "姓名25","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "26","name": "姓名26","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "27","name": "姓名27","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "28","name": "姓名28","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "29","name": "姓名29","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "30","name": "姓名30","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "31","name": "姓名31","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "32","name": "姓名32","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "33","name": "姓名33","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "34","name": "姓名34","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "35","name": "姓名35","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "36","name": "姓名36","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "37","name": "姓名37","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "38","name": "姓名38","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "39","name": "姓名39","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "40","name": "姓名40","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "41","name": "姓名41","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "42","name": "姓名42","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "43","name": "姓名43","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "44","name": "姓名44","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "45","name": "姓名45","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "46","name": "姓名46","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "47","name": "姓名47","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "48","name": "姓名48","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "49","name": "姓名49","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "50","name": "姓名50","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "51","name": "姓名51","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "52","name": "姓名52","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "53","name": "姓名53","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "54","name": "姓名54","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "55","name": "姓名55","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "56","name": "姓名56","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "57","name": "姓名57","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "58","name": "姓名58","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "59","name": "姓名59","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "60","name": "姓名60","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "61","name": "姓名61","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "62","name": "姓名62","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "63","name": "姓名63","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "64","name": "姓名64","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "65","name": "姓名65","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "66","name": "姓名66","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "67","name": "姓名67","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "68","name": "姓名68","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "69","name": "姓名69","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "70","name": "姓名70","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "71","name": "姓名71","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "72","name": "姓名72","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "73","name": "姓名73","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "74","name": "姓名74","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "75","name": "姓名75","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "76","name": "姓名76","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "77","name": "姓名77","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "78","name": "姓名78","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "79","name": "姓名79","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "80","name": "姓名80","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "81","name": "姓名81","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "82","name": "姓名82","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "83","name": "姓名83","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "84","name": "姓名84","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "85","name": "姓名85","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "86","name": "姓名86","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "87","name": "姓名87","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "88","name": "姓名88","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "89","name": "姓名89","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "90","name": "姓名90","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "91","name": "姓名91","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "92","name": "姓名92","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "93","name": "姓名93","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "94","name": "姓名94","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "95","name": "姓名95","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "96","name": "姓名96","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "97","name": "姓名97","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "98","name": "姓名98","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "99","name": "姓名99","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "100","name": "姓名100","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "101","name": "姓名101","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "102","name": "姓名102","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "103","name": "姓名103","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "104","name": "姓名104","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "105","name": "姓名105","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "106","name": "姓名106","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "107","name": "姓名107","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "108","name": "姓名108","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "109","name": "姓名109","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "110","name": "姓名110","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "111","name": "姓名111","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "112","name": "姓名112","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "113","name": "姓名113","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "114","name": "姓名114","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "115","name": "姓名115","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "116","name": "姓名116","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "117","name": "姓名117","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "118","name": "姓名118","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "119","name": "姓名119","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "120","name": "姓名120","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "121","name": "姓名121","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "122","name": "姓名122","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "123","name": "姓名123","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "124","name": "姓名124","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"},{"uid": "125","name": "姓名125","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg"}],"hasPrizeDraw": []}
 }
 </script>
 
