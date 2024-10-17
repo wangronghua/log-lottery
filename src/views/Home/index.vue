@@ -54,7 +54,6 @@ const hasPrizeDrawList = ref<any[]>([])
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
-let luckyCount = ref(47)
 
 const intervalTimer = ref<any>(null)
 
@@ -357,12 +356,12 @@ const startLottery = () => {
         return
     }
 
-    luckyCount.value = 50 // 48   36  30   25  24  21  20  18  15  12  10 ...
+    var luckyCount = 50 // 48   36  30   25  24  21  20  18  15  12  10 ...
     // 自定义抽奖个数
 
     var personPool = notPersonList.value
     // 验证是否已抽完全部奖项
-    if (luckyCount.value <= 0 || personPool.length <=0 ) {
+    if (luckyCount <= 0 || personPool.length <=0 ) {
         toast.open({
             message: '抽奖抽完了',
             type: 'warning',
@@ -373,7 +372,7 @@ const startLottery = () => {
         return
     }
 
-    for (let i = 0; i < luckyCount.value; i++) {
+    for (let i = 0; i < luckyCount; i++) {
         if (personPool.length > 0) {
             const randomIndex = Math.round(Math.random() * (personPool.length - 1))
             luckyTargets.value.push(personPool[randomIndex])
@@ -383,7 +382,7 @@ const startLottery = () => {
         }
     }
     toast.open({
-        message: `现在抽取${luckyCount.value}人`,
+        message: `现在抽取${luckyCount}人`,
         type:'default',
         position: 'top-right',
         duration: 8000
@@ -491,7 +490,6 @@ const continueLottery = async () => {
     if (!canOperate.value) {
         return
     }
-    luckyCount.value = 0
     personConfig.addAlreadyPersonList(luckyTargets.value)
     await enterLottery()
 }
