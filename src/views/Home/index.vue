@@ -41,6 +41,8 @@ const camera = ref()
 const renderer = ref()
 const controls = ref()
 const objects = ref<any[]>([])
+const maxwidth = ref(0)
+const maxheight = ref(0)
 
 const targets = {
     grid: <any[]>[],
@@ -51,7 +53,7 @@ const targets = {
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
-const luckyCount = ref(4)
+const luckyCount = ref(5)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -85,7 +87,9 @@ const init = () => {
     camera.value = new PerspectiveCamera(felidView, aspect, nearPlane, farPlane);
     camera.value.position.z = cameraZ.value
     renderer.value = new CSS3DRenderer()
-    renderer.value.setSize(width, height * 0.9)
+    maxwidth.value = Math.floor(width);
+    maxheight.value = Math.floor(height);
+    renderer.value.setSize(maxwidth.value, maxheight.value)
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
     // renderer.value.domElement.style.paddingTop = '50px'
@@ -429,8 +433,8 @@ const stopLottery = async () => {
         }
     }
 
-    let maxcwidth = Math.floor(2030/(columncount*1.5-0.5));
-    let maxcheight = Math.floor(1240/(rowcount*1.3-0.3));
+    let maxcwidth = Math.floor(maxwidth.value/(columncount*1.2-0.2));
+    let maxcheight = Math.floor(maxheight.value/(rowcount*1.1-0.1));
 
     let cwidth = 0;
     let cheight = 0;
@@ -443,8 +447,8 @@ const stopLottery = async () => {
         cwidth = maxcheight*14/20;
     }    
 
-    let colspace = cwidth*0.5
-    let rowspace = cheight*0.3
+    let colspace = cwidth*0.2
+    let rowspace = cheight*0.1
 
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
         let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
