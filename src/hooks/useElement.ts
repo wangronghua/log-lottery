@@ -3,19 +3,19 @@ import { IPersonConfig } from '@/types/storeType'
 
 export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
     let rate = Math.ceil(cardSize.width/140)
-    let textSize = 30 * rate;
+    let textSize = 14 * rate;
 
-    if (patternList.includes(index+1)&&mod=='default') {
-        element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
-    }
-    else if(mod=='sphere'||mod=='default') {
-        element.style.backgroundColor = rgba(cardColor, Math.random() * 0.5 + 0.25)
-    }
-    else if(mod=='lucky'){
-        element.style.backgroundColor = rgba(cardColor, 0.8)
-    }
-    element.style.border = `1px solid ${rgba(cardColor, 0.25)}`
-    element.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
+    // if (patternList.includes(index+1)&&mod=='default') {
+    //     element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
+    // }
+    // else if(mod=='sphere'||mod=='default') {
+    //     element.style.backgroundColor = rgba(cardColor, Math.random() * 0.5 + 0.25)
+    // }
+    // else if(mod=='lucky'){
+    //     element.style.backgroundColor = rgba(cardColor, 0.8)
+    // }
+    // element.style.border = `1px solid ${rgba(cardColor, 0.25)}`
+    // element.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
     element.style.width = `${cardSize.width}px`;
     element.style.height = `${cardSize.height}px`;
     if (mod == 'lucky') {
@@ -27,28 +27,29 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     // 等比放大
     element.addEventListener('mouseenter', (ev: MouseEvent) => {
         const target = ev.target as HTMLElement
-        target.style.border = `1px solid ${rgba(cardColor, 0.75)}`
-        target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.75)}`
+        // target.style.border = `1px solid ${rgba(cardColor, 0.75)}`
+        // target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.75)}`
     })
     element.addEventListener('mouseleave', (ev: MouseEvent) => {
         const target = ev.target as HTMLElement
-        target.style.border = `1px solid ${rgba(cardColor, 0.25)}`
-        target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
+        // target.style.border = `1px solid ${rgba(cardColor, 0.25)}`
+        // target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
     })
     // element.children[0].style.fontSize = textSize * 0.5 + 'px';
     // if (person.uid) {
     //     element.children[0].textContent = person.uid;
     // }
     //0 头像，1昵称，2奖品
+    element.children[0].style.border = `${3*rate}px solid #FF5959`
     element.children[1].style.fontSize = textSize + 'px'
-    element.children[1].style.lineHeight = textSize * 2 + 'px'
+    // element.children[1].style.lineHeight = textSize * 2 + 'px'
     element.children[1].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
     if (person.name) {
         element.children[1].textContent = person.name
     }
     
-    element.children[2].style.fontSize = textSize + 'px'
-    element.children[2].style.lineHeight = textSize * 2 + 'px'
+    element.children[2].style.fontSize = textSize*0.8 + 'px'
+    // element.children[2].style.lineHeight = textSize * 2 + 'px'
     element.children[2].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
     if (person.prizeName) {
         element.children[2].textContent = person.prizeName

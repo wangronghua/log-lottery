@@ -2,66 +2,63 @@
     cursor: default;
     text-align: center;
     user-select: none;
-    .card-headpic-c{
-        border-radius:50%; overflow:hidden;border: 3px solid #ccc;
-        width:40%;
-        margin:auto;
-    }
-    .card-name {
-        position: absolute;
-        top: 30%;
-        left: 0;
-        right: 0;
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .card-headpic{
-        width:100%; height:100%;object-fit: cover;
-    }
+    background: url(../assets/images/cardbg.png) no-repeat;
+    background-size:100% 100%;
     .card-prize{
         display: none;
+    }
+    .card-name {
+        top: 60%;
     }
 }
 
 .lucky-element-card {
     cursor: default;
     text-align: center;
-    &::before {
-        background-color: linear-gradient(-45deg, #e81cff 0%, #40c9ff 100%);
-        border: 1px solid linear-gradient(-45deg, #e81cff 0%, #40c9ff 100%);
-    }
+    background: url(../assets/images/cardbg.png) no-repeat;
+    background-size:100% 100%;
 
-    .card-headpic-c{
-        border-radius:50%; overflow:hidden;border: 3px solid #ccc;
-        width:40%;
-        margin:auto;
-    }
-    .card-name {
-        position: absolute;
-        top: 30%;
-        left: 0;
-        right: 0;
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
-        // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
-        // animation-delay: 0.6s;
-    }
-    .card-headpic{
-        width:100%; height:100%;object-fit: cover;
-    }
     .card-prize{
         position: absolute;
-        top:60%;
+        top: 67%;
         left: 0;
         right: 0;
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-weight: 500;
+        color: #333333;
+        width: 78%;
+        margin:auto;
+
+        white-space:pre-wrap;
+        word-break:break-all;
     }
+}
+
+.card-headpic-c{
+    border-radius:50%; overflow:hidden;
+    width:60%;
+    margin:auto;
+    position: absolute;
+    top:7%;
+    left: 0;
+    right: 0;
+}
+.card-name {
+    position: absolute;
+    top: 55%;
+    left: 0;
+    right: 0;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color:#666666;
+    background-color: #fff;
+    width: 80%;
+    margin:auto;
+    // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+    // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+    // animation-delay: 0.6s;
+}
+.card-headpic{
+    width:100%; height:100%;object-fit: cover;
 }
