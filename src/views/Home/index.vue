@@ -641,10 +641,13 @@ const getLoadData = async ()=>{
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
 
+        <div class="lefttitle title">参与人员({{allPersonList.length}})</div>
+        <div class="righttitle title">中奖名单({{hasPrizeDrawList.length}})</div>
+
         <!-- 选中菜单结构 start-->
         <div id="menu">
 
-            <div style="margin-left: 26%;color: #FF2100;font-size: 22px;font-weight: 400;display:flex;align-items:center;">剩余待抽奖{{allPersonList.length}}人</div>
+            <div style="margin-left: 25.7%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">剩余待抽奖{{notPrizeDrawList.length}}人</div>
 
             <div class="start">
                 <button v-if="currentStatus == 1" class="btn-start" @click="startLottery">开始
@@ -664,7 +667,7 @@ const getLoadData = async ()=>{
                 </button>
             </div>
             
-            <div style="margin-left: 8%;color: #FF2100;font-size: 22px;font-weight: 400;display:flex;align-items:center;">
+            <div style="margin-left: 8%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">
                 单次抽<input class="luckyCount" v-model="luckyCount"></input> 
                 人</div>
 
@@ -684,7 +687,7 @@ const getLoadData = async ()=>{
     z-index: 100;
     width: 100%;
     height: 56px;
-    bottom: 50px;
+    bottom: 3%;
     text-align: center;
     margin: 0 auto;
     font-size: 32px;
@@ -695,7 +698,27 @@ const getLoadData = async ()=>{
     -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
     animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
 }
-
+.title{
+    position:absolute;
+    top:16.5%;
+    width:15%;
+    font-weight: 500;
+    font-size: 22px;
+    color: #F7F7F7;
+    height: 10%;
+    letter-spacing: 1px;
+    text-shadow: 0px 3px 4px #FF0000;
+    -webkit-text-stroke: 1px #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lefttitle{
+    left:6%;
+}
+.righttitle{
+    right:7.2%;
+}
 .start {
     // 居中
     display: flex;
@@ -734,7 +757,16 @@ const getLoadData = async ()=>{
 
 .luckyCount,.luckyCount:focus,.luckyCount:active {
     outline:none;
-    color: #FF2100;font-size: 22px;font-weight: 400;text-align: center;width:33px;border-width:0 0 1px;border-bottom:1px solid #FF2100;padding:0px 5px;margin:0px 5px;background-color:transparent
+    color: rgba(255,255,255,0.8);
+    font-size: 22px;
+    font-weight: 400;
+    text-align: center;
+    width:33px;
+    border-width:0 0 1px;
+    border-bottom:1px solid rgba(255,255,255,0.8);
+    padding:0px 5px;
+    margin:0px 5px;
+    background-color:transparent
 }
 strong {
     z-index: 2;
