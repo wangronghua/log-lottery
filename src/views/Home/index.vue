@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, } from 'vue'
+import { ref, onMounted, onUnmounted, toValue, } from 'vue'
 import PrizeList from './PrizeList.vue'
 import { useElementStyle, useElementPosition } from '@/hooks/useElement'
 import StarsBackground from '@/components/StarsBackground/index.vue'
@@ -394,6 +394,7 @@ const stopLottery = async () => {
     if (!canOperate.value) {
         return
     }
+    currentStatus.value=100;
     clearInterval(intervalTimer.value)
     intervalTimer.value = null
     canOperate.value = false
@@ -643,32 +644,30 @@ const getLoadData = async ()=>{
         <!-- 选中菜单结构 start-->
         <div id="menu">
 
-            <div class="start" v-if="currentStatus == 1">
-                <button class="btn-start" @click="startLottery">开始
+            <div style="margin-left: 26%;color: #FF2100;font-size: 22px;font-weight: 400;display:flex;align-items:center;">剩余待抽奖{{allPersonList.length}}人</div>
+
+            <div class="start">
+                <button v-if="currentStatus == 1" class="btn-start" @click="startLottery">开始
+                    <div id="container-stars">
+                        <div id="stars"></div>
+                    </div>
+                </button>
+                <button v-if="currentStatus == 2" class="btn-start" @click="stopLottery">停止抽奖
+                    <div id="container-stars">
+                        <div id="stars"></div>
+                    </div>
+                </button>
+                <button v-if="currentStatus == 3" class="btn-start" @click="continueLottery">继续
                     <div id="container-stars">
                         <div id="stars"></div>
                     </div>
                 </button>
             </div>
-
             
-            <div class="start" v-if="currentStatus == 2">
-                <button class="btn-start" @click="stopLottery">停止抽奖
-                    <div id="container-stars">
-                        <div id="stars"></div>
-                    </div>
-                </button>
-            </div>
+            <div style="margin-left: 8%;color: #FF2100;font-size: 22px;font-weight: 400;display:flex;align-items:center;">
+                单次抽<input class="luckyCount" v-model="luckyCount"></input> 
+                人</div>
 
-            <div v-if="currentStatus == 3" class="flex justify-center gap-6 enStop">
-                <div class="start">
-                    <button class="btn-start" @click="continueLottery">继续
-                        <div id="container-stars">
-                            <div id="stars"></div>
-                        </div>
-                    </button>
-                </div>
-            </div>
             <!--   <button id="table" @click="transform(targets.table, 2000)">TABLE</button> -->
             <!--  <button id="helix" @click="transform(targets.helix, 2000)">HELIX</button> -->
 
@@ -677,7 +676,6 @@ const getLoadData = async ()=>{
     </div>
     <!-- <LuckyView :luckyPersonList="luckyTargets"  ref="LuckyViewRef"></LuckyView> -->
     <!-- <PlayMusic class="absolute right-0 bottom-1/2"></PlayMusic> -->
-    <div class="all-title">参与人员({{allPersonList.length}})</div>
 </template>
 
 <style scoped lang="scss">
@@ -685,15 +683,14 @@ const getLoadData = async ()=>{
     position: absolute;
     z-index: 100;
     width: 100%;
+    height: 56px;
     bottom: 50px;
     text-align: center;
     margin: 0 auto;
     font-size: 32px;
+    display: flex;
 }
 
-.all-title{
-    
-}
 .header-title {
     -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
     animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
@@ -703,6 +700,8 @@ const getLoadData = async ()=>{
     // 居中
     display: flex;
     justify-content: center;
+    margin-left:6%;
+    width:15%;
 }
 
 .btn-start {
@@ -733,7 +732,10 @@ const getLoadData = async ()=>{
     line-height: 42px;
 }
 
-
+.luckyCount,.luckyCount:focus,.luckyCount:active {
+    outline:none;
+    color: #FF2100;font-size: 22px;font-weight: 400;text-align: center;width:33px;border-width:0 0 1px;border-bottom:1px solid #FF2100;padding:0px 5px;margin:0px 5px;background-color:transparent
+}
 strong {
     z-index: 2;
     font-family: 'Avalors Personal Use';
