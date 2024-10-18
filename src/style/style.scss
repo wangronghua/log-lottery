@@ -1,8 +1,12 @@
+.w-screen{
+    background-image: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/bg.png?1);
+    background-size:100% 100%;
+}
 .element-card {
     cursor: default;
     text-align: center;
     user-select: none;
-    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png) no-repeat;
+    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
     background-size:100% 100%;
     .card-prize{
         display: none;
@@ -15,10 +19,16 @@
 .lucky-element-card {
     cursor: default;
     text-align: center;
-    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png) no-repeat;
+    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
     background-size:100% 100%;
 
     .card-prize{
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
         position: absolute;
         top: 67%;
         left: 0;

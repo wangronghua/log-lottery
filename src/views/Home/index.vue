@@ -53,7 +53,7 @@ const targets = {
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
-const luckyCount = ref(1)
+const luckyCount = ref(4)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -93,15 +93,15 @@ const init = () => {
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
     // renderer.value.domElement.style.paddingTop = '50px'
-    renderer.value.domElement.style.top = '50%';
-    renderer.value.domElement.style.left = '50%';
+    renderer.value.domElement.style.top = '53%';
+    renderer.value.domElement.style.left = '48%';
     renderer.value.domElement.style.transform = 'translate(-50%, -50%)';
     WebGLoutput!.appendChild(renderer.value.domElement);
 
     controls.value = new TrackballControls(camera.value, renderer.value.domElement);
     controls.value.rotateSpeed = 1;
     controls.value.staticMoving = true;
-    controls.value.minDistance = 500;
+    controls.value.minDistance = 3500;
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
 
@@ -490,6 +490,7 @@ const continueLottery = async () => {
     if (!canOperate.value) {
         return
     }
+    currentStatus.value=100;
     await enterLottery()
 }
 const quitLottery = () => {
@@ -635,7 +636,7 @@ const getLoadData = async ()=>{
 <template>
     <div class="absolute z-10 flex flex-col items-center justify-center -translate-x-1/2 left-1/2">
         <h2 class="pt-12 m-0 mb-12 font-mono tracking-wide text-center leading-12 header-title"
-            :style="{ fontSize: '45px', color: textColor }">周年大放纵 媛分双倍送</h2>
+            :style="{ fontSize: '45px', color: textColor }"></h2>
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
 
@@ -643,30 +644,27 @@ const getLoadData = async ()=>{
         <div id="menu">
 
             <div class="start" v-if="currentStatus == 1">
-                <button class="btn-start" @click="startLottery"><strong>开始</strong>
+                <button class="btn-start" @click="startLottery">开始
                     <div id="container-stars">
                         <div id="stars"></div>
-                    </div>
-
-                    <div id="glow">
-                        <div class="circle"></div>
-                        <div class="circle"></div>
                     </div>
                 </button>
             </div>
 
-            <button class="btn-end btn glass btn-lg" @click="stopLottery" v-if="currentStatus == 2">抽取幸运儿</button>
+            
+            <div class="start" v-if="currentStatus == 2">
+                <button class="btn-start" @click="stopLottery">停止抽奖
+                    <div id="container-stars">
+                        <div id="stars"></div>
+                    </div>
+                </button>
+            </div>
 
             <div v-if="currentStatus == 3" class="flex justify-center gap-6 enStop">
                 <div class="start">
-                    <button class="btn-start" @click="continueLottery"><strong>继续！</strong>
+                    <button class="btn-start" @click="continueLottery">继续
                         <div id="container-stars">
                             <div id="stars"></div>
-                        </div>
-
-                        <div id="glow">
-                            <div class="circle"></div>
-                            <div class="circle"></div>
                         </div>
                     </button>
                 </div>
@@ -677,11 +675,9 @@ const getLoadData = async ()=>{
         </div>
         <!-- end -->
     </div>
-    <StarsBackground></StarsBackground>
-
     <!-- <LuckyView :luckyPersonList="luckyTargets"  ref="LuckyViewRef"></LuckyView> -->
     <!-- <PlayMusic class="absolute right-0 bottom-1/2"></PlayMusic> -->
-    <PrizeList class="absolute left-0 top-32"></PrizeList>
+    <div class="all-title">参与人员({{allPersonList.length}})</div>
 </template>
 
 <style scoped lang="scss">
@@ -695,6 +691,9 @@ const getLoadData = async ()=>{
     font-size: 32px;
 }
 
+.all-title{
+    
+}
 .header-title {
     -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
     animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
@@ -711,51 +710,29 @@ const getLoadData = async ()=>{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 13rem;
+    width: 280px;
     overflow: hidden;
-    height: 3rem;
-    background-size: 300% 300%;
-    backdrop-filter: blur(1rem);
-    border-radius: 5rem;
+    height: 56px;
     transition: 0.5s;
     animation: gradient_301 5s ease infinite;
-    border: double 4px transparent;
-    background-image: linear-gradient(#212121, #212121), linear-gradient(137.48deg, #ffdb3b 10%, #FE53BB 45%, #8F51EA 67%, #0044ff 87%);
+
+    
+    border-radius: 35px;
+    border: 4px solid transparent;
+
+    background-image: linear-gradient( 90deg, #FFE8E0 0%, #FFF7EA 44%, #FFDCD0 100%),linear-gradient(180deg, rgba(255, 152, 44, 1), rgba(255, 36, 36, 1));
     background-origin: border-box;
     background-clip: content-box, border-box;
     -webkit-animation: pulsate-fwd 1.2s ease-in-out infinite both;
     animation: pulsate-fwd 1.2s ease-in-out infinite both;
+    padding:1px;
+
+    font-size: 30px;
+    font-weight: 500;
+    color: #FF2100;
+    line-height: 42px;
 }
 
-.btn-cancel {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 13rem;
-    overflow: hidden;
-    height: 3rem;
-    background-size: 300% 300%;
-    backdrop-filter: blur(1rem);
-    border-radius: 5rem;
-    transition: 0.5s;
-    animation: gradient_301 5s ease infinite;
-    border: double 4px transparent;
-    background-image: linear-gradient(#212121, #212121), linear-gradient(137.48deg, #ffdb3b 10%, #FE53BB 45%, #8F51EA 67%, #0044ff 87%);
-    background-origin: border-box;
-    background-clip: content-box, border-box;
-}
-
-#container-stars {
-    position: absolute;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    transition: 0.5s;
-    backdrop-filter: blur(1rem);
-    border-radius: 5rem;
-}
 
 strong {
     z-index: 2;
@@ -766,31 +743,9 @@ strong {
     text-shadow: 0 0 4px white;
 }
 
-#glow {
-    position: absolute;
-    display: flex;
-    width: 12rem;
-}
-
-.circle {
-    width: 100%;
-    height: 30px;
-    filter: blur(2rem);
-    animation: pulse_3011 4s infinite;
-    z-index: -1;
-}
-
-.circle:nth-of-type(1) {
-    background: rgba(254, 83, 186, 0.636);
-}
-
-.circle:nth-of-type(2) {
-    background: rgba(142, 81, 234, 0.704);
-}
 
 .btn-start:hover #container-stars {
     z-index: 1;
-    background-color: #212121;
 }
 
 .btn-start:hover {
@@ -804,47 +759,6 @@ strong {
     animation: none;
 }
 
-.btn-start:active .circle {
-    background: #FE53BB;
-}
-
-#stars {
-    position: relative;
-    background: transparent;
-    width: 200rem;
-    height: 200rem;
-}
-
-#stars::after {
-    content: "";
-    position: absolute;
-    top: -10rem;
-    left: -100rem;
-    width: 100%;
-    height: 100%;
-    animation: animStarRotate 90s linear infinite;
-}
-
-#stars::after {
-    background-image: radial-gradient(#ffffff 1px, transparent 1%);
-    background-size: 50px 50px;
-}
-
-#stars::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 170%;
-    height: 500%;
-    animation: animStar 60s linear infinite;
-}
-
-#stars::before {
-    background-image: radial-gradient(#ffffff 1px, transparent 1%);
-    background-size: 50px 50px;
-    opacity: 0.5;
-}
 
 @keyframes animStar {
     from {
@@ -909,7 +823,7 @@ strong {
     --enhanced-glow-color: rgb(231, 206, 255);
     --btn-color: rgb(100, 61, 136);
     border: .25em solid var(--glow-color);
-    padding: 1em 3em;
+    //padding: 1em 3em;
     color: var(--glow-color);
     font-size: 15px;
     font-weight: bold;
