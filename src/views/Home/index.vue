@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, toValue, } from 'vue'
-import PrizeList from './PrizeList.vue'
+import { ref, onMounted, onUnmounted} from 'vue'
 import { useElementStyle, useElementPosition } from '@/hooks/useElement'
-import StarsBackground from '@/components/StarsBackground/index.vue'
 import confetti from 'canvas-confetti'
-import { filterData, selectCard } from '@/utils'
-import { rgba } from '@/utils/color'
+import { selectCard } from '@/utils'
 import { IPersonConfig } from '@/types/storeType'
-// import * as THREE from 'three'
 import { Scene, PerspectiveCamera, Object3D, Vector3 } from 'three'
-// import {
-//     CSS3DRenderer, CSS3DObject
-// } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import { CSS3DRenderer, CSS3DObject } from 'three-css3d'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
-// import TrackballControls from 'three-trackballcontrols';
-// import TWEEN from 'three/examples/jsm/libs/tween.module.js';
 import * as TWEEN from '@tweenjs/tween.js'
 import useStore from '@/store'
 import { storeToRefs } from 'pinia'
@@ -25,10 +16,9 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 
 const toast = useToast();
 const router = useRouter()
-const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 
-const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize } = storeToRefs(globalConfig)
+const { getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize } = storeToRefs(globalConfig)
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
 const containerRef = ref<HTMLElement>()
@@ -36,6 +26,7 @@ const containerRef = ref<HTMLElement>()
 const canOperate = ref(true)
 const cameraZ = ref(3000)
 
+const lowzIndex=ref(false)
 const scene = ref()
 const camera = ref()
 const renderer = ref()
@@ -53,7 +44,7 @@ const targets = {
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
-const luckyCount = ref(4)
+const luckyCount = ref(50)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -101,7 +92,8 @@ const init = () => {
     controls.value = new TrackballControls(camera.value, renderer.value.domElement);
     controls.value.rotateSpeed = 1;
     controls.value.staticMoving = true;
-    controls.value.minDistance = 3500;
+    controls.value.noZoom = true; // 禁止缩放
+    controls.value.minDistance = 500;//动画区域的大小
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
 
@@ -155,44 +147,22 @@ const init = () => {
         const objLength = objects.value.length;
         const vector = new Vector3();
 
+        //控制球大小
+        let ballsize = 700
         for (; i < objLength; ++i) {
             let phi = Math.acos(-1 + (2 * i) / objLength);
             let theta = Math.sqrt(objLength * Math.PI) * phi;
             const object = new Object3D();
 
-            object.position.x = 800 * Math.cos(theta) * Math.sin(phi);
-            object.position.y = 800 * Math.sin(theta) * Math.sin(phi);
-            object.position.z = -800 * Math.cos(phi);
+            object.position.x = ballsize * Math.cos(theta) * Math.sin(phi);
+            object.position.y = ballsize * Math.sin(theta) * Math.sin(phi);
+            object.position.z = -ballsize * Math.cos(phi);
 
             // rotation object 
 
             vector.copy(object.position).multiplyScalar(2);
             object.lookAt(vector);
             targets.sphere.push(object);
-        }
-    }
-    function createHelixVertices() {
-        let i = 0;
-        const vector = new Vector3();
-        const objLength = objects.value.length;
-        for (; i < objLength; ++i) {
-            let phi = i * 0.213 + Math.PI;
-
-            const object = new Object3D();
-
-            object.position.x = 800 * Math.sin(phi);
-            object.position.y = -(i * 8) + 450;
-            object.position.z = 800 * Math.cos(phi + Math.PI);
-
-            object.scale.set(1.1, 1.1, 1.1);
-
-            vector.x = object.position.x * 2;
-            vector.y = object.position.y;
-            vector.z = object.position.z * 2;
-
-            object.lookAt(vector);
-
-            targets.helix.push(object);
         }
     }
     window.addEventListener('resize', onWindowResize, false);
@@ -252,7 +222,6 @@ const transform = (targets: any[], duration: number) => {
 function onWindowResize() {
     camera.value.aspect = window.innerWidth / window.innerHeight
     camera.value.updateProjectionMatrix();
-    console.log(window.innerWidth, window.innerHeight);
     renderer.value.setSize(window.innerWidth, window.innerHeight);
     render();
 }
@@ -298,45 +267,6 @@ function rollBall(rotateY: number, duration: number) {
             })
     })
 }
-// 将视野转回正面
-function resetCamera() {
-    new TWEEN.Tween(camera.value.position)
-        .to(
-            {
-                x: 0,
-                y: 0,
-                z: 3000
-            },
-            1000
-        )
-        .onUpdate(render)
-        .start()
-        .onComplete(() => {
-            new TWEEN.Tween(camera.value.rotation)
-                .to(
-                    {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    1000
-                )
-                .onUpdate(render)
-                .start()
-                .onComplete(() => {
-                    canOperate.value = true
-                    // camera.value.lookAt(scene.value.position)
-                    camera.value.position.y = 0
-                    camera.value.position.x = 0
-                    camera.value.position.z = 3000
-                    camera.value.rotation.x = 0
-                    camera.value.rotation.y = 0
-                    camera.value.rotation.z = -0
-                    controls.value.reset()
-                })
-        })
-}
-
 function render() {
     renderer.value.render(scene.value, camera.value);
 }
@@ -347,15 +277,9 @@ const enterLottery = async () => {
     if (!intervalTimer.value) {
         randomBallData()
     }
-    // if (patternList.value.length) {
-    //     for(let i=0;i<patternList.value.length;i++){//objects.value
-    //         if(i<rowCount.value*7){
-    //             objects.value[patternList.value[i]-1].element.style.backgroundColor = rgba(cardColor.value, Math.random() * 0.5 + 0.25)
-    //         }
-    //     }
-    // }
     canOperate.value = false
     await transform(targets.sphere, 1000)
+    lowzIndex.value=false;
     currentStatus.value = 1
     rollBall(0.1, 2000)
 }
@@ -365,7 +289,6 @@ const startLottery = () => {
     if (!canOperate.value) {
         return
     }
-
     luckyCount.value = Math.min(luckyCount.value,notPrizeDrawList.value.length) // 48   36  30   25  24  21  20  18  15  12  10 ...
     // 自定义抽奖个数
 
@@ -394,6 +317,7 @@ const stopLottery = async () => {
     if (!canOperate.value) {
         return
     }
+    lowzIndex.value=true;
     currentStatus.value=100;
     clearInterval(intervalTimer.value)
     intervalTimer.value = null
@@ -644,7 +568,17 @@ const getLoadData = async ()=>{
         <div class="lefttitle title">参与人员({{allPersonList.length}})</div>
         <div class="righttitle title">中奖名单({{hasPrizeDrawList.length}})</div>
 
-        <!-- 选中菜单结构 start-->
+        <div class="renyuan renyuanleft" :class="{'renyuantop':!lowzIndex}">
+            <div class="renyuanitem" v-for="item in allPersonList" :key="item.uid">
+                <div class="headpic-c">
+                    <img :src="item.headPic" class="headpic"></img>
+                </div>
+                <div>
+                    {{ item.name }}
+                </div>
+            </div>
+        </div>
+
         <div id="menu">
 
             <div style="margin-left: 25.7%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">剩余待抽奖{{notPrizeDrawList.length}}人</div>
@@ -671,17 +605,42 @@ const getLoadData = async ()=>{
                 单次抽<input class="luckyCount" v-model="luckyCount"></input> 
                 人</div>
 
-            <!--   <button id="table" @click="transform(targets.table, 2000)">TABLE</button> -->
-            <!--  <button id="helix" @click="transform(targets.helix, 2000)">HELIX</button> -->
-
         </div>
-        <!-- end -->
     </div>
-    <!-- <LuckyView :luckyPersonList="luckyTargets"  ref="LuckyViewRef"></LuckyView> -->
-    <!-- <PlayMusic class="absolute right-0 bottom-1/2"></PlayMusic> -->
 </template>
 
 <style scoped lang="scss">
+.renyuan {
+    width:18%;
+    height:60%;
+    overflow-y: auto;
+    left:5%;
+    top:28%;
+    position:absolute;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .renyuanitem{
+        flex: 0 0 calc(33.333% - 10px);
+    }
+
+    .headpic-c{
+        border-radius:50%; overflow:hidden;
+        width:60%;
+        margin:auto;
+
+        .headpic{
+            width:100%; height:100%;object-fit: cover;
+        }
+    }
+}
+.renyuantop{
+    z-index: 10; 
+}
+.renyuanleft{
+
+}
+
 #menu {
     position: absolute;
     z-index: 100;
