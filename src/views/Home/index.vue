@@ -568,13 +568,15 @@ const getLoadData = async ()=>{
         <div class="lefttitle title">参与人员({{allPersonList.length}})</div>
         <div class="righttitle title">中奖名单({{hasPrizeDrawList.length}})</div>
 
-        <div class="renyuan renyuanleft" :class="{'renyuantop':!lowzIndex}">
-            <div class="renyuanitem" v-for="item in allPersonList" :key="item.uid">
-                <div class="headpic-c">
-                    <img :src="item.headPic" class="headpic"></img>
-                </div>
-                <div>
-                    {{ item.name }}
+        <div class="renyuanparent" :class="{'renyuantop':!lowzIndex}">
+            <div class="renyuan renyuanleft">
+                <div class="renyuanitem" v-for="item in allPersonList" :key="item.uid">
+                    <div class="headpic-c">
+                        <img :src="item.headPic" class="headpic"></img>
+                    </div>
+                    <div class="name">
+                        {{ item.name }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -610,30 +612,60 @@ const getLoadData = async ()=>{
 </template>
 
 <style scoped lang="scss">
-.renyuan {
-    width:18%;
-    height:60%;
-    overflow-y: auto;
-    left:5%;
-    top:28%;
+.renyuanparent{
+    width:20.5%;
+    height:61%;
     position:absolute;
+    left:3.2%;
+    top:26%;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.renyuan {
+    padding:20px;
     display:flex;
     flex-wrap: wrap;
     justify-content: space-between;
     .renyuanitem{
-        flex: 0 0 calc(33.333% - 10px);
+        width:33%;
+        padding:10px 0px;
     }
 
     .headpic-c{
-        border-radius:50%; overflow:hidden;
+        overflow:hidden;
         width:60%;
         margin:auto;
+        //border: 2px solid;
+        position: relative; 
+        padding: 5px;
 
         .headpic{
             width:100%; height:100%;object-fit: cover;
+            border-radius:50%; 
         }
     }
+    .headpic-c::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url(../../assets/images/headbg.png);
+        background-size: cover; /* 让背景图充满容器 */
+        background-position: center;
+        z-index: -1; /* 将背景图置于图片后面 */
+        border-radius: 50%; /* 背景图的边缘也保持圆形 */
+    }
+    .name{
+        font-weight: 400;
+        font-size: 22px;
+        color: #333333;
+        line-height: 30px;
+        text-align: center;
+    }
 }
+
 .renyuantop{
     z-index: 10; 
 }
