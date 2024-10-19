@@ -82,6 +82,14 @@ const init = () => {
     renderer.value = new CSS3DRenderer()
     maxwidth.value = Math.floor(width);
     maxheight.value = Math.floor(height);
+    
+    var leftwidth = Math.floor(width*0.205);
+    var leftinnerWidth = Math.floor((leftwidth-40)/3)-1;
+
+    document.documentElement.style.setProperty('--renyuan-width', leftinnerWidth+'px');
+    document.documentElement.style.setProperty('--headpic-width', Math.floor(width*0.036)+'px');
+    document.documentElement.style.setProperty('--headpic-padding', Math.floor(width*0.004)+'px');
+
     renderer.value.setSize(maxwidth.value, maxheight.value)
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
@@ -611,6 +619,7 @@ const getLoadData = async ()=>{
     // "hasPrizeDraw": [{"uid": "1","name": "姓名1","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg","prizeName":"我是奖品名称我是"},{"uid": "2","name": "姓名2","headPic": "https://mpg.zhenyansong.com/ystest/img/profile.jpg","prizeName":"我是奖品名称我是奖品名要把名称显示全"}
     // ]}
 }
+
 </script>
 
 <template>
@@ -695,6 +704,7 @@ const getLoadData = async ()=>{
     position:absolute;
     top:26%;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: none;
 }
 .renyuanparentleft{
@@ -709,19 +719,18 @@ const getLoadData = async ()=>{
     padding:20px;
     display:flex;
     flex-wrap: wrap;
-    justify-content: space-between;
 
     .headpic-c{
         overflow:hidden;
-        width:60%;
+        width:var(--headpic-width);
         margin:auto;
         //border: 2px solid;
         position: relative; 
-        padding: 5px;
+        padding: var(--headpic-padding);
         display: flex;
 
         .headpic{
-            width:100%; 
+            width:var(--headpic-width); 
             height:auto;
             aspect-ratio:1;
             object-fit: cover;
@@ -744,8 +753,8 @@ const getLoadData = async ()=>{
 }
 .renyuanleft{
     .renyuanitem{
-        width:33%;
-        padding:10px 0px;
+        width:var(--renyuan-width);
+        padding:10px 1px 10px 0px;
     }
     .name{
         font-weight: 400;
@@ -758,11 +767,12 @@ const getLoadData = async ()=>{
 .renyuanright{
     .renyuanitem{
         display: flex;
+        flex:1;
         flex-direction:row;
         padding:3px 0px;
         margin-bottom: 20px;
         .headpic-c{
-            width:18%;
+            width:var(--headpic-width);
             margin-right: 3%;
         }
         .name{
