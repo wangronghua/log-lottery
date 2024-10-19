@@ -22,6 +22,7 @@ const { getCardColor: cardColor, getPatterColor: patternColor, getPatternList: p
 const currentStatus = ref(0) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
 const ballRotationY = ref(0)
 const containerRef = ref<HTMLElement>()
+const coverbgRef = ref<HTMLElement>()
 // const LuckyViewRef= ref()
 const canOperate = ref(true)
 const cameraZ = ref(3000)
@@ -34,6 +35,7 @@ const controls = ref()
 const objects = ref<any[]>([])
 const maxwidth = ref(0)
 const maxheight = ref(0)
+const coverbgobject = ref<any>()
 
 const targets = {
     grid: <any[]>[],
@@ -84,8 +86,10 @@ const init = () => {
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
     // renderer.value.domElement.style.paddingTop = '50px'
-    renderer.value.domElement.style.top = '53%';
-    renderer.value.domElement.style.left = '48%';
+    // renderer.value.domElement.style.top = '53%';
+    // renderer.value.domElement.style.left = '48%';
+    renderer.value.domElement.className="beforeDraw";
+
     renderer.value.domElement.style.transform = 'translate(-50%, -50%)';
     WebGLoutput!.appendChild(renderer.value.domElement);
 
@@ -132,6 +136,15 @@ const init = () => {
 
         objects.value.push(object);
     }
+
+    
+    var coverbg = document.createElement('div');
+    coverbg.className = 'coverbg'
+    coverbgobject.value = new CSS3DObject(coverbg);
+    coverbgobject.value.position.x = 0;
+    coverbgobject.value.position.y = 0;
+    coverbgobject.value.position.z = 0;
+    scene.value.add(coverbgobject.value);
 
     // createTableVertices();
     createSphereVertices();
@@ -278,8 +291,14 @@ const enterLottery = async () => {
         randomBallData()
     }
     canOperate.value = false
+    
+    if(coverbgobject.value.element.parentElement!=null){
+        coverbgobject.value.element.parentElement.parentElement.className="beforeDraw"
+    }
+
     await transform(targets.sphere, 1000)
     lowzIndex.value=false;
+    // coverbgRef.value.style.visibility="hidden";
     currentStatus.value = 1
     rollBall(0.1, 2000)
 }
@@ -375,6 +394,32 @@ const stopLottery = async () => {
     let colspace = cwidth*0.2
     let rowspace = cheight*0.1
 
+    coverbgobject.value.element.parentElement.parentElement.className="afterDraw"
+    
+    new TWEEN.Tween(coverbgobject.value.position)
+            .to({
+                x: 0,
+                y: 0,
+                z: 800
+            }, 2200)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .onStart(() => {
+            })
+            .onComplete(() => {
+               
+            })
+            .start()
+    new TWEEN.Tween(coverbgobject.value.rotation)
+        .to({
+            x: 0,
+            y: 0,
+            z: 0
+        }, 900)
+        .easing(TWEEN.Easing.Exponential.InOut)
+        .start()
+        .onComplete(() => {
+        })
+
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
         let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
         luckyCardList.value.push(cardIndex)
@@ -405,10 +450,11 @@ const stopLottery = async () => {
             .easing(TWEEN.Easing.Exponential.InOut)
             .start()
             .onComplete(() => {
+                // coverbgRef.value.style.visibility="visible";
                 confettiFire()
                 // resetCamera()
             })
-    })
+    }) 
 }
 // 继续
 const continueLottery = async () => {
@@ -566,7 +612,6 @@ const getLoadData = async ()=>{
             :style="{ fontSize: '45px', color: textColor }"></h2>
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
-
         <div class="lefttitle title">参与人员({{allPersonList.length}})</div>
         <div class="righttitle title">中奖名单({{hasPrizeDrawList.length}})</div>
 

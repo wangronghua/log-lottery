@@ -2,6 +2,13 @@
     background-image: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/bg.png?2);
     background-size:100% 100%;
 }
+.coverbg{
+    width: 2000%;
+    height: 1200%;
+    background-color: #333333;
+    display: none;
+    opacity: 0.7;
+}
 .element-card {
     cursor: default;
     text-align: center;
@@ -14,6 +21,29 @@
     .card-name {
         top: 60%;
     }
+}
+.beforeDraw{
+    top:53%;
+    left:48%;
+}
+.afterDraw{
+    top:50%;
+    left:50%;
+}
+
+.afterDraw .element-card{
+    display: none;
+}
+.beforeDraw .element-card{
+    display: inherit;
+}
+
+
+.afterDraw .coverbg{
+    display: inherit;
+}
+.beforeDraw .coverbg{
+    display: none;
 }
 
 .lucky-element-card {
