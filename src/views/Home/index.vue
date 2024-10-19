@@ -721,7 +721,10 @@ const getLoadData = async ()=>{
         display: flex;
 
         .headpic{
-            width:100%; height:100%;object-fit: cover;
+            width:100%; 
+            height:auto;
+            aspect-ratio:1;
+            object-fit: cover;
             border-radius:50%; 
         }
     }
