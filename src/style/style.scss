@@ -55,16 +55,17 @@
     .card-prize{
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         overflow: hidden;
         text-overflow: ellipsis;
 
         position: absolute;
-        top: 67%;
+        top: 71%;
         left: 0;
         right: 0;
         font-weight: 500;
-        color: #333333;
+        background-color: #fff;
+        color: #333;
         width: 78%;
         margin:auto;
 

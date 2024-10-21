@@ -104,10 +104,12 @@ const init = () => {
     WebGLoutput!.appendChild(renderer.value.domElement);
 
     controls.value = new TrackballControls(camera.value, renderer.value.domElement);
-    controls.value.rotateSpeed = 
-    1;
+    controls.value.rotateSpeed = 1;
     controls.value.staticMoving = true;
     controls.value.noZoom = true; // 禁止缩放
+    controls.value.noRotate = true; //https://www.wenjiangs.com/doc/rjvdcbep
+    // controls.value.minZoom=5;
+    // controls.value.screen={left:0,top:0,width:maxwidth.value,height:maxheight.value}
     controls.value.minDistance = 500;//动画区域的大小
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
@@ -340,7 +342,7 @@ const startLottery = () => {
         duration: 8000
     })
     currentStatus.value = 2
-    rollBall(1, 3000)
+    rollBall(5, 3000)
 }
 
 const stopLottery = async () => {
@@ -405,8 +407,8 @@ const stopLottery = async () => {
         }
     }
 
-    let maxcwidth = Math.floor(maxwidth.value/(columncount*1.2-0.2));
-    let maxcheight = Math.floor(maxheight.value/(rowcount*1.1-0.1));
+    let maxcwidth = Math.floor(maxwidth.value/(columncount*1.2-0.2))*1.3;
+    let maxcheight = Math.floor(maxheight.value/(rowcount*1.1-0.1))*1.1;
 
     let cwidth = 0;
     let cheight = 0;
@@ -789,6 +791,11 @@ const getLoadData = async ()=>{
         color: #333333;
         line-height: 30px;
         text-align: center;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 .renyuanright{

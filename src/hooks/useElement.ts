@@ -3,7 +3,7 @@ import { IPersonConfig } from '@/types/storeType'
 
 export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
     let rate = cardSize.width/140
-    let textSize = 14 * rate;
+    let textSize = 14 * rate*1.5;
 
     // if (patternList.includes(index+1)&&mod=='default') {
     //     element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
@@ -43,14 +43,14 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     element.children[0].style.border = `${3*rate}px solid #FF5959`
     element.children[1].style.fontSize = textSize + 'px'
     // element.children[1].style.lineHeight = textSize * 2 + 'px'
-    element.children[1].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
+    // element.children[1].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
     if (person.name) {
         element.children[1].textContent = person.name
     }
     
     element.children[2].style.fontSize = textSize*0.8 + 'px'
     // element.children[2].style.lineHeight = textSize * 2 + 'px'
-    element.children[2].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
+    // element.children[2].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
     if (person.prizeName) {
         element.children[2].textContent = person.prizeName
     }
