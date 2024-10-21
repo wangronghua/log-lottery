@@ -391,18 +391,22 @@ const stopLottery = async () => {
 
     
     let maxrowcount = 5;//最多5行
-    let maxcolumncount = 10;//最多10列
+    let maxcolumncount = 12;//最多10列
 
     let columncount = 10;//如果都没匹配默认10列
     let rowcount = Math.ceil(luckyTargets.value.length / columncount)
    
+    var colrowrate = luckyTargets.value.length>=40?2.01:1.5;
     for(var i=maxrowcount;i>=1;i--){
         var tempcolcount = Math.ceil(luckyTargets.value.length/i);
         if(tempcolcount<=maxcolumncount){
             columncount = tempcolcount;
             rowcount = i;
         }
-        if(tempcolcount>=i+1){
+        // if(tempcolcount>=i+2){
+        //     break;
+        // }
+        if(tempcolcount>=i*colrowrate){
             break;
         }
     }
