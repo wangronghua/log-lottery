@@ -391,42 +391,46 @@ const stopLottery = async () => {
 
     
     let maxrowcount = 5;//最多5行
-    let maxcolumncount = 12;//最多10列
+    let maxcolumncount = 13;//最多10列
 
     let columncount = 10;//如果都没匹配默认10列
     let rowcount = Math.ceil(luckyTargets.value.length / columncount)
    
     var colrowrate = luckyTargets.value.length>=40?2.01:1.5;
+    
+    let cwidth = 0;
+    let cheight = 0;
+    
+    let tcwidth = 0;
+    let tcheight = 0;
     for(var i=maxrowcount;i>=1;i--){
         var tempcolcount = Math.ceil(luckyTargets.value.length/i);
         if(tempcolcount<=maxcolumncount){
-            columncount = tempcolcount;
-            rowcount = i;
-        }
-        // if(tempcolcount>=i+2){
-        //     break;
-        // }
-        if(tempcolcount>=i*colrowrate){
-            break;
+
+            
+            let maxcwidth = Math.floor(maxwidth.value/(tempcolcount*1.1-0.1))*1.3;
+            let maxcheight = Math.floor(maxheight.value/(i*1.05-0.05))*1.1;
+
+            
+            if(maxcwidth*20/14<maxcheight){
+                tcwidth = maxcwidth;
+                tcheight = maxcwidth*20/14;
+            }else{
+                tcheight = maxcheight;
+                tcwidth = maxcheight*14/20;
+            }    
+
+            if(tcwidth>cwidth){
+                columncount = tempcolcount;
+                rowcount = i;
+                cwidth=tcwidth;
+                cheight=tcheight
+            }
         }
     }
 
-    let maxcwidth = Math.floor(maxwidth.value/(columncount*1.2-0.2))*1.3;
-    let maxcheight = Math.floor(maxheight.value/(rowcount*1.1-0.1))*1.1;
-
-    let cwidth = 0;
-    let cheight = 0;
-
-    if(maxcwidth*20/14<maxcheight){
-        cwidth = maxcwidth;
-        cheight = maxcwidth*20/14;
-    }else{
-        cheight = maxcheight;
-        cwidth = maxcheight*14/20;
-    }    
-
-    let colspace = cwidth*0.2
-    let rowspace = cheight*0.1
+    let colspace = cwidth*0.1
+    let rowspace = cheight*0.05
 
     coverbgobject.value.element.parentElement.parentElement.className="afterDraw"
     
