@@ -396,20 +396,24 @@ const stopLottery = async () => {
     let columncount = 10;//如果都没匹配默认10列
     let rowcount = Math.ceil(luckyTargets.value.length / columncount)
    
-    var colrowrate = luckyTargets.value.length>=40?2.01:1.5;
-    
     let cwidth = 0;
     let cheight = 0;
     
     let tcwidth = 0;
     let tcheight = 0;
+
+    let widthheightrate = {width:1.3,height:1.1};//maxwidth.value/maxheight.value    1920/1080
+    if(maxwidth.value/maxheight.value==1.5){//2880/1920
+        widthheightrate={width:1.5,height:1.2}
+    }
+
     for(var i=maxrowcount;i>=1;i--){
         var tempcolcount = Math.ceil(luckyTargets.value.length/i);
         if(tempcolcount<=maxcolumncount){
 
             
-            let maxcwidth = Math.floor(maxwidth.value/(tempcolcount*1.1-0.1))*1.3;
-            let maxcheight = Math.floor(maxheight.value/(i*1.05-0.05))*1.1;
+            let maxcwidth = Math.floor(maxwidth.value/(tempcolcount*1.1-0.1))*widthheightrate.width;
+            let maxcheight = Math.floor(maxheight.value/(i*1.05-0.05))*widthheightrate.height;
 
             
             if(maxcwidth*20/14<maxcheight){
