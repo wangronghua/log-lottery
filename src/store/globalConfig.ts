@@ -138,11 +138,9 @@ export const useGlobalConfig = defineStore('global', {
         },
         // 设置图案列表
         setPatternList(patternList: number[]) {
-            this.globalConfig.theme.patternList = patternList;
         },
         // 重置图案列表
         resetPatternList() {
-            this.globalConfig.theme.patternList = defaultPatternList;
         },
         // 添加音乐
         addMusic(music: IMusic) {
@@ -210,25 +208,6 @@ export const useGlobalConfig = defineStore('global', {
         },
         // 重置所有配置
         reset() {
-            this.globalConfig = {
-                rowCount: 17,
-                isSHowPrizeList: true,
-                topTitle: '',
-                theme: {
-                    name: 'dracula',
-                    detail: { primary: '#0f5fd3' },
-                    cardColor: '#ff79c6',
-                    cardWidth: 140,
-                    cardHeight: 200,
-                    textColor: '#ffffff',
-                    luckyCardColor: '#ECB1AC',
-                    textSize: 30,
-                    patternColor: '#1b66c9',
-                    patternList: defaultPatternList as number[],
-                },
-                musicList: defaultMusicList as IMusic[],
-                imageList: defaultImageList as IImage[],
-            },
                 this.currentMusic = {
                     item: defaultMusicList[0],
                     paused: true,

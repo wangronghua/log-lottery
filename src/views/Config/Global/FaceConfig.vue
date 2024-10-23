@@ -72,7 +72,7 @@ const resetPersonLayout = () => {
         const newNotPersonList = allPersonList.slice(alreadyLen, notLen + alreadyLen)
         personConfig.deleteAllPerson()
         personConfig.addNotPersonList(newNotPersonList)
-        personConfig.addAlreadyPersonList(newAlreadyPersonList, null)
+        personConfig.addAlreadyPersonList(newAlreadyPersonList)
 
         isRowCountChange.value = 0
     }, 1000)
