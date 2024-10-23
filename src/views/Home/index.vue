@@ -648,7 +648,7 @@ onUnmounted(() => {
     window.removeEventListener('keydown', listenKeyboard)
 })
 // const urlpre='https://mpg.zhenyansong.com/ystest';
-const urlpre='http://192.168.11.250/ystest';
+const urlpre=location.origin+'/ystest';
 const getLoadData = async ()=>{
     // const request = new Request();
     // const res = await request({
@@ -656,7 +656,6 @@ const getLoadData = async ()=>{
     //   method: 'GET',
     // });
     // return res;
-
     const res = await request.get(urlpre+'/system/activity/prizedraw/'+router.currentRoute.value.query.activityId,{
         withCredentials: true
     });
