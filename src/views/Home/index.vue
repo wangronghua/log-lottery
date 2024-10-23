@@ -327,7 +327,7 @@ const startLottery = () => {
     // 验证是否已抽完全部奖项
     if (luckyCount.value <= 0) {
         toast.open({
-            message: '抽奖抽完了',
+            message: '剩余待抽奖人数为0，请先添加参与人员',
             type: 'warning',
             position: 'top-right',
             duration: 10000
@@ -404,16 +404,8 @@ const stopLottery = async () => {
 
     //场景宽度
     var scenewidth = coverbgobject.value.element.parentElement.getBoundingClientRect().width;
-    console.log(scenewidth);
     //场景比例
     var scenerate = maxwidth.value/scenewidth;
-    console.log(scenerate)
-
-    let widthheightrate = {width:1.3,height:1.1};//maxwidth.value/maxheight.value    1920/1080
-    if(maxwidth.value/maxheight.value==1.5){//2880/1920
-        widthheightrate={width:1.5,height:1.2}
-    }
-    //3840/2160
 
     for(var i=maxrowcount;i>=1;i--){
         var tempcolcount = Math.ceil(luckyTargets.value.length/i);
@@ -648,7 +640,6 @@ onUnmounted(() => {
     intervalTimer.value = null
     window.removeEventListener('keydown', listenKeyboard)
 })
-// const urlpre='https://mpg.zhenyansong.com/ystest';
 const urlpre=location.origin+'/ystest';
 const getLoadData = async ()=>{
     // const request = new Request();
