@@ -402,25 +402,26 @@ const stopLottery = async () => {
     let tcwidth = 0;
     let tcheight = 0;
 
-    // //场景宽度
-    // var scenewidth = coverbgobject.value.element.parentElement.getBoundingClientRect().width;
-    // console.log(scenewidth);
-    // //场景比例
-    // var scenerate = maxwidth.value/scenewidth;
-    // console.log(scenerate)
+    //场景宽度
+    var scenewidth = coverbgobject.value.element.parentElement.getBoundingClientRect().width;
+    console.log(scenewidth);
+    //场景比例
+    var scenerate = maxwidth.value/scenewidth;
+    console.log(scenerate)
 
     let widthheightrate = {width:1.3,height:1.1};//maxwidth.value/maxheight.value    1920/1080
     if(maxwidth.value/maxheight.value==1.5){//2880/1920
         widthheightrate={width:1.5,height:1.2}
     }
+    //3840/2160
 
     for(var i=maxrowcount;i>=1;i--){
         var tempcolcount = Math.ceil(luckyTargets.value.length/i);
         if(tempcolcount<=maxcolumncount){
 
             
-            let maxcwidth = Math.floor(maxwidth.value/(tempcolcount*1.1-0.1))*widthheightrate.width;
-            let maxcheight = Math.floor(maxheight.value/(i*1.05-0.05))*widthheightrate.height;
+            let maxcwidth = Math.floor(maxwidth.value*scenerate/(1.4955*(tempcolcount*1.1-0.1)));
+            let maxcheight = Math.floor((maxheight.value*0.94-112)*scenerate/(1.4955*(i*1.05-0.05)));
 
             
             if(maxcwidth*20/14<maxcheight){
