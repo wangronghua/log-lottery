@@ -402,6 +402,13 @@ const stopLottery = async () => {
     let tcwidth = 0;
     let tcheight = 0;
 
+    // //场景宽度
+    // var scenewidth = coverbgobject.value.element.parentElement.getBoundingClientRect().width;
+    // console.log(scenewidth);
+    // //场景比例
+    // var scenerate = maxwidth.value/scenewidth;
+    // console.log(scenerate)
+
     let widthheightrate = {width:1.3,height:1.1};//maxwidth.value/maxheight.value    1920/1080
     if(maxwidth.value/maxheight.value==1.5){//2880/1920
         widthheightrate={width:1.5,height:1.2}
