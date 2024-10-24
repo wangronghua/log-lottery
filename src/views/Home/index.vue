@@ -330,7 +330,7 @@ const startLottery = () => {
             message: '剩余待抽奖人数为0，请先添加参与人员',
             type: 'warning',
             position: 'top-right',
-            duration: 10000
+            duration: 1500
         })
 
         return
@@ -339,22 +339,30 @@ const startLottery = () => {
         message: `现在抽取${luckyCount.value}人`,
         type:'default',
         position: 'top-right',
-        duration: 8000
+        duration: 1500
     })
     currentStatus.value = 2
     rollBall(5, 3000)
 }
-
+const changeLuckyCount = (event:any)=>{
+    if(luckyCount.value >50){
+        luckyCount.value = 50;
+        
+        toast.open({
+            message: '单次抽奖人数不能超过50人',
+            type: 'warning',
+            position: 'top-right',
+            duration: 1500
+        })
+    }
+};
 const stopLottery = async () => {
     if (!canOperate.value) {
         return
     }
-    lowzIndex.value=true;
-    currentStatus.value=100;
-    clearInterval(intervalTimer.value)
-    intervalTimer.value = null
-    canOperate.value = false
+    luckyTargets.value = [];
 
+    var oldNotPrizeDrawList = notPrizeDrawList.value.slice()
     var uidlist = [];
     for (let i = 0; i < luckyCount.value; i++) {
         if (notPrizeDrawList.value.length > 0) {
@@ -373,6 +381,26 @@ const stopLottery = async () => {
     },{
         withCredentials: true
     });
+
+    if(res.data.code==500){
+        notPrizeDrawList.value = oldNotPrizeDrawList;
+        toast.open({
+            message: res.data.msg,
+            type: 'warning',
+            position: 'top-right',
+            duration: 1500
+        })
+        return;
+    }
+
+
+    lowzIndex.value=true;
+    currentStatus.value=100;
+    clearInterval(intervalTimer.value)
+    intervalTimer.value = null
+    canOperate.value = false
+
+
     var data = res.data.data;
     for(var i=0;i<data.length;i++){
         hasPrizeDrawList.value.unshift(data[i]);
@@ -727,7 +755,7 @@ const getLoadData = async ()=>{
             </div>
             
             <div style="margin-left: 8%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">
-                单次抽<input class="luckyCount" v-model="luckyCount"></input> 
+                单次抽<input class="luckyCount" v-model="luckyCount" @input="changeLuckyCount"></input> 
                 人</div>
 
         </div>
