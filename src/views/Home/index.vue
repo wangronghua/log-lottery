@@ -651,7 +651,12 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
         }
         for (let i = 0; i < cardRandomIndexArr.length; i++) {
             if(objects.value.length>cardRandomIndexArr[i]){
-                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
+                
+                var temp = objects.value[cardRandomIndexArr[i]].element;
+                objects.value[cardRandomIndexArr[i]].element=objects.value[personRandomIndexArr[i]].element;
+                objects.value[personRandomIndexArr[i]].element = temp;
+
+                // objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
             }
         }
     }, 200)
