@@ -326,7 +326,7 @@ const startLottery = () => {
     // 自定义抽奖个数
 
     // 验证是否已抽完全部奖项
-    if (luckyCount.value <= 0) {
+    if (notPrizeDrawList.value.length <= 0) {
         toast.open({
             message: '剩余待抽奖人数为0，请先添加参与人员',
             type: 'warning',
@@ -351,6 +351,15 @@ const changeLuckyCount = (event:any)=>{
         
         toast.open({
             message: '单次抽奖人数不能超过50人',
+            type: 'warning',
+            position: 'top-right',
+            duration: 1500
+        })
+    }else if(luckyCount.value<1){
+        luckyCount.value = 1;
+        
+        toast.open({
+            message: '单次抽奖人数不能少于1人',
             type: 'warning',
             position: 'top-right',
             duration: 1500
