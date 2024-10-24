@@ -405,6 +405,20 @@ const stopLottery = async () => {
         continueLottery();
         return;
     }
+    var data = res.data.data;
+
+    if(data.length==0){
+        toast.open({
+            message: '抽奖失败，请重新抽奖',
+            type: 'warning',
+            position: 'top-right',
+            duration: 1500
+        })
+        
+        canOperate.value = true;
+        continueLottery();
+        return;
+    }
 
 
     lowzIndex.value=true;
@@ -414,7 +428,6 @@ const stopLottery = async () => {
     canOperate.value = false
 
 
-    var data = res.data.data;
     for(var i=0;i<data.length;i++){
         hasPrizeDrawList.value.unshift(data[i]);
         for(var j=0;j<luckyTargets.value.length;j++){
