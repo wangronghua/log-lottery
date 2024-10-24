@@ -105,6 +105,7 @@ const init = () => {
 
     controls.value = new TrackballControls(camera.value, renderer.value.domElement);
     controls.value.rotateSpeed = 1;
+    controls.value.enabled=false;
     controls.value.staticMoving = true;
     controls.value.noZoom = true; // 禁止缩放
     controls.value.noRotate = true; //https://www.wenjiangs.com/doc/rjvdcbep
@@ -390,6 +391,9 @@ const stopLottery = async () => {
             position: 'top-right',
             duration: 1500
         })
+        
+        canOperate.value = true;
+        continueLottery();
         return;
     }
 
@@ -411,8 +415,6 @@ const stopLottery = async () => {
             }
         }
     }
-
-    console.log(res);
 
     rollBall(0, 1)
 
@@ -464,69 +466,74 @@ const stopLottery = async () => {
     let colspace = cwidth*0.1
     let rowspace = cheight*0.05
 
-    coverbgobject.value.element.parentElement.parentElement.className="afterDraw"
+    if(luckyTargets.value.length>0){
+        coverbgobject.value.element.parentElement.parentElement.className="afterDraw"
     
-    new TWEEN.Tween(coverbgobject.value.position)
-            .to({
-                x: 0,
-                y: 0,
-                z: 800
-            }, 2200)
-            .easing(TWEEN.Easing.Exponential.InOut)
-            .onStart(() => {
-            })
-            .onComplete(() => {
-               
-            })
-            .start()
-    new TWEEN.Tween(coverbgobject.value.rotation)
-        .to({
-            x: 0,
-            y: 0,
-            z: 0
-        }, 900)
-        .easing(TWEEN.Easing.Exponential.InOut)
-        .start()
-        .onComplete(() => {
-        })
-
-    luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
-        if(person.prizeName){
-            let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
-            luckyCardList.value.push(cardIndex)
-            let item = objects.value[cardIndex]
-            const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
-            new TWEEN.Tween(item.position)
-                .to({
-                    x: xTable,
-                    y: yTable,
-                    z: 1000
-                }, 1200)
-                .easing(TWEEN.Easing.Exponential.InOut)
-                .onStart(() => {
-                    item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
-                })
-                .start()
-                .onComplete(() => {
-                    canOperate.value = true
-                    
-                    currentStatus.value = 3
-                })
-            new TWEEN.Tween(item.rotation)
+        new TWEEN.Tween(coverbgobject.value.position)
                 .to({
                     x: 0,
                     y: 0,
-                    z: 0
-                }, 900)
+                    z: 800
+                }, 2200)
                 .easing(TWEEN.Easing.Exponential.InOut)
-                .start()
-                .onComplete(() => {
-                    // coverbgRef.value.style.visibility="visible";
-                    confettiFire()
-                    // resetCamera()
+                .onStart(() => {
                 })
-        }
-    }) 
+                .onComplete(() => {
+                
+                })
+                .start()
+        new TWEEN.Tween(coverbgobject.value.rotation)
+            .to({
+                x: 0,
+                y: 0,
+                z: 0
+            }, 900)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .start()
+            .onComplete(() => {
+            })
+
+        luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
+            if(person.prizeName){
+                let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
+                luckyCardList.value.push(cardIndex)
+                let item = objects.value[cardIndex]
+                const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
+                new TWEEN.Tween(item.position)
+                    .to({
+                        x: xTable,
+                        y: yTable,
+                        z: 1000
+                    }, 1200)
+                    .easing(TWEEN.Easing.Exponential.InOut)
+                    .onStart(() => {
+                        item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
+                    })
+                    .start()
+                    .onComplete(() => {
+                        canOperate.value = true
+                        
+                        currentStatus.value = 3
+                    })
+                new TWEEN.Tween(item.rotation)
+                    .to({
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    }, 900)
+                    .easing(TWEEN.Easing.Exponential.InOut)
+                    .start()
+                    .onComplete(() => {
+                        // coverbgRef.value.style.visibility="visible";
+                        confettiFire()
+                        // resetCamera()
+                    })
+            }
+        }) 
+    }else{
+        canOperate.value = true
+        currentStatus.value = 3
+    }
 }
 // 继续
 const continueLottery = async () => {
