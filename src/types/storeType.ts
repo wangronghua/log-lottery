@@ -2,6 +2,7 @@ export interface IPersonConfig {
     id: number;
     uid: string;
     name: string;
+    headPic: string;
     department: string;
     identity: string;
     isWin: boolean;

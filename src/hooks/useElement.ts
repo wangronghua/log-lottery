@@ -44,6 +44,9 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     element.children[1].style.fontSize = textSize + 'px'
     // element.children[1].style.lineHeight = textSize * 2 + 'px'
     // element.children[1].style.textShadow = `0 0 12px ${rgba(cardColor, 0.95)}`
+    if(person.headPic){
+        element.children[0].children[0].src=person.headPic
+    }
     if (person.name) {
         element.children[1].textContent = person.name
     }
