@@ -463,39 +463,41 @@ const stopLottery = async () => {
         })
 
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
-        let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
-        luckyCardList.value.push(cardIndex)
-        let item = objects.value[cardIndex]
-        const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
-        new TWEEN.Tween(item.position)
-            .to({
-                x: xTable,
-                y: yTable,
-                z: 1000
-            }, 1200)
-            .easing(TWEEN.Easing.Exponential.InOut)
-            .onStart(() => {
-                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
-            })
-            .start()
-            .onComplete(() => {
-                canOperate.value = true
-                
-                currentStatus.value = 3
-            })
-        new TWEEN.Tween(item.rotation)
-            .to({
-                x: 0,
-                y: 0,
-                z: 0
-            }, 900)
-            .easing(TWEEN.Easing.Exponential.InOut)
-            .start()
-            .onComplete(() => {
-                // coverbgRef.value.style.visibility="visible";
-                confettiFire()
-                // resetCamera()
-            })
+        if(person.prizeName){
+            let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
+            luckyCardList.value.push(cardIndex)
+            let item = objects.value[cardIndex]
+            const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
+            new TWEEN.Tween(item.position)
+                .to({
+                    x: xTable,
+                    y: yTable,
+                    z: 1000
+                }, 1200)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .onStart(() => {
+                    item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
+                })
+                .start()
+                .onComplete(() => {
+                    canOperate.value = true
+                    
+                    currentStatus.value = 3
+                })
+            new TWEEN.Tween(item.rotation)
+                .to({
+                    x: 0,
+                    y: 0,
+                    z: 0
+                }, 900)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .start()
+                .onComplete(() => {
+                    // coverbgRef.value.style.visibility="visible";
+                    confettiFire()
+                    // resetCamera()
+                })
+        }
     }) 
 }
 // 继续
@@ -834,6 +836,12 @@ const getLoadData = async ()=>{
             color: #333333;
             line-height: 30px;
             text-align: left;
+
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 }
