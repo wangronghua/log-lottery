@@ -390,7 +390,8 @@ const stopLottery = async () => {
         for(var i=0;i<uidlist.length;i++){
             data.push({
                 uid:uidlist[i],
-                prizeName:"奖品"+i
+                prizeName:"奖品"+i,
+                headPic:"https://mpg.zhenyansong.com/ystest/img/profile.jpg"
             });
         }
     }else{
