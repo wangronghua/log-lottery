@@ -370,6 +370,7 @@ const stopLottery = async () => {
     if (!canOperate.value) {
         return
     }
+    canOperate.value = false
     luckyTargets.value = [];
 
     var oldNotPrizeDrawList = notPrizeDrawList.value.slice()
@@ -385,6 +386,12 @@ const stopLottery = async () => {
         }else{
             break
         }
+    }
+
+    if(uidlist.length==0){
+        canOperate.value = true;
+        continueLottery();
+        return;
     }
     
     if(isTest()){
@@ -434,7 +441,6 @@ const stopLottery = async () => {
     currentStatus.value=100;
     clearInterval(intervalTimer.value)
     intervalTimer.value = null
-    canOperate.value = false
 
 
     for(var i=0;i<data.length;i++){
