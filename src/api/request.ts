@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { InternalAxiosRequestConfig } from 'axios';
+import { useToast } from 'vue-toast-notification';
+const toast = useToast();
 class Request {
   private instance: AxiosInstance;
 
@@ -31,9 +33,10 @@ class Request {
       (response: AxiosResponse) => {
         // 对响应数据做些什么
         console.log('响应拦截器被触发');
-        const reponseData = response.data;
+        // const reponseData = response.data;
 
-        return reponseData;
+        // return reponseData;
+        return response;
       },
       (error: any) => {
         // 对响应错误做些什么
@@ -44,15 +47,27 @@ class Request {
     );
   }
 
-  public async request<T>(config: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.instance.request(config);
-
-    return response.data;
+  public async request<T>(config: AxiosRequestConfig): Promise<T|null> {
+    try{
+      const response: AxiosResponse<T> = await this.instance.request(config);
+  
+      return response.data;
+    }catch(e){
+        toast.open({
+            message: `网络错误，请重新登录`,
+            type: 'warning',
+            position: 'top-right',
+            duration: 1500
+        })
+        
+        // location.href="http://mpg.zhenyansong.com/ys/login";
+        return null;
+    }
   }
 }
 
 // 函数
-function request<T>(config: AxiosRequestConfig): Promise<T> {
+function request<T>(config: AxiosRequestConfig): Promise<T|null> {
   const instance = new Request(config);
 
   return instance.request(config);
