@@ -70,6 +70,60 @@ async function initTableData() {
         allPersonList.value.push(hasPrizeDrawList.value[i]);
     }
 }
+var mocklist = [{"name":"LuckyStar✨","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/1.jpg"},
+{"name":"DreamChaser","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/2.jpg"},
+{"name":"weetiePie","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/3.jpg"},
+{"name":"JoyfulMoment","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/4.jpg"},
+{"name":"MysteryGuru","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/5.jpg"},
+{"name":"NightSky","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/6.png"},
+{"name":"BlissfulSoul","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/7.jpg"},
+{"name":"AdventureTime","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/8.jpg"},
+{"name":"EchoWave","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/9.jpg"},
+{"name":"SilverLining","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/10.jpg"},
+{"name":"GlamourGirl","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/11.jpg"},
+{"name":"SilentThought","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/12.jpg"},
+{"name":"WhisperingWind","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/13.jpg"},
+{"name":"MorningSunrise","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/14.jpg"},
+{"name":"SweetDreamer","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/15.jpg"},
+{"name":"EchoesOfTime","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/16.jpg"},
+{"name":"WhimsicalWorld","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/17.jpg"},
+{"name":"ChasingRainbows","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/18.jpg"},
+{"name":"StarGazer","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/19.jpg"},
+{"name":"MidnightVibes","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/20.jpg"}];
+const initItem = (item:any)=>{
+    let element = document.createElement('div');
+    element.className = 'element-card';
+
+    let imgc = document.createElement('div');
+    imgc.className = 'card-headpic-c';
+    const headpic = document.createElement('img');
+    headpic.className = 'card-headpic';
+    headpic.src = item.headPic;
+    imgc.appendChild(headpic);
+    element.appendChild(imgc);
+
+    // element.append("<div class='card-headpic-c'><img src='"+item.headPic+"' class='card-headpic'/></div>");
+
+    const symbol = document.createElement('div');
+    symbol.className = 'card-name';
+    symbol.textContent = item.name;
+    element.appendChild(symbol);
+    
+    const prizeName = document.createElement('div');
+    prizeName.className = 'card-prize';
+    prizeName.innerHTML = `${item.prizeName||''}`;
+    element.appendChild(prizeName);
+
+    element = useElementStyle(element, item, patternList.value, patternColor.value, cardColor.value, cardSize.value)
+    const object = new CSS3DObject(element);
+    object.position.x = Math.random() * 4000 - 2000;
+    object.position.y = Math.random() * 4000 - 2000;
+    object.position.z = Math.random() * 4000 - 2000;
+    object.userData["uid"]= item.uid
+    scene.value.add(object);
+
+    objects.value.push(object);
+};
 const init = () => {
     const felidView = 40;
     const width = window.innerWidth;
@@ -118,38 +172,12 @@ const init = () => {
 
     const tableLen = allPersonList.value.length
     for (let i = 0; i < tableLen; i++) {
-        let element = document.createElement('div');
-        element.className = 'element-card';
-
-        let imgc = document.createElement('div');
-        imgc.className = 'card-headpic-c';
-        const headpic = document.createElement('img');
-        headpic.className = 'card-headpic';
-        headpic.src = allPersonList.value[i].headPic;
-        imgc.appendChild(headpic);
-        element.appendChild(imgc);
-
-        // element.append("<div class='card-headpic-c'><img src='"+allPersonList.value[i].headPic+"' class='card-headpic'/></div>");
-
-        const symbol = document.createElement('div');
-        symbol.className = 'card-name';
-        symbol.textContent = allPersonList.value[i].name;
-        element.appendChild(symbol);
-        
-        const prizeName = document.createElement('div');
-        prizeName.className = 'card-prize';
-        prizeName.innerHTML = `${allPersonList.value[i].prizeName||''}`;
-        element.appendChild(prizeName);
-
-        element = useElementStyle(element, allPersonList.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value)
-        const object = new CSS3DObject(element);
-        object.position.x = Math.random() * 4000 - 2000;
-        object.position.y = Math.random() * 4000 - 2000;
-        object.position.z = Math.random() * 4000 - 2000;
-        object.userData["uid"]= allPersonList.value[i].uid
-        scene.value.add(object);
-
-        objects.value.push(object);
+        initItem(allPersonList.value[i])
+    }
+    if(allPersonList.value.length<20){
+        for(let i=19-allPersonList.value.length;i>=0;i--){
+            initItem(mocklist[i])
+        }
     }
 
     
@@ -226,7 +254,7 @@ const transform = (targets: any[], duration: number) => {
                     if (luckyCardList.value.length) {
                         luckyCardList.value.forEach((cardIndex: any) => {
                             const item = objects.value[cardIndex]
-                            useElementStyle(item.element, {} as any, i, patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
+                            useElementStyle(item.element, {} as any, patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
                         })
                     }
                     luckyTargets.value = [];
@@ -553,7 +581,7 @@ const stopLottery = async () => {
                     }, 1200)
                     .easing(TWEEN.Easing.Exponential.InOut)
                     .onStart(() => {
-                        item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
+                        item.element = useElementStyle(item.element, person, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
                     })
                     .start()
                     .onComplete(() => {
@@ -681,7 +709,7 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
                 // objects.value[cardRandomIndexArr[i]].element=objects.value[personRandomIndexArr[i]].element;
                 // objects.value[personRandomIndexArr[i]].element = temp;
 
-                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
+                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
             }
         }
     }, 200)
