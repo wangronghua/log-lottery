@@ -48,12 +48,14 @@ const targets = {
 const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
-const luckyCount = ref(50)
+const maxLuckCount = 40
+const luckyCount = ref(maxLuckCount)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
 
 const intervalTimer = ref<any>(null)
+const prizes = ref<any[]>([])
 
 // 填充数据，填满七行
 async function initTableData() {
@@ -68,6 +70,19 @@ async function initTableData() {
     }
     for (let i = 0; i < hasPrizeDrawList.value.length; i++) {
         allPersonList.value.push(hasPrizeDrawList.value[i]);
+    }
+
+    
+    const res = await request<any>({
+            url:urlpre+'/system/prize/list',
+            method: 'post',
+            data:'pageSize=999&pageNum=1&orderByColumn=createTime&isAsc=desc&name=&type=',
+            withCredentials: true
+        });
+    for(var i=0;i<res.rows.length;i++)
+    {
+        var row = res.rows[i];
+        prizes.value.push({name:row.name,headPic:row.pictureUrl});
     }
 }
 var mocklist = [{"name":"LuckyStar✨","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/1.jpg"},
@@ -170,14 +185,18 @@ const init = () => {
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
 
-    const tableLen = allPersonList.value.length
-    for (let i = 0; i < tableLen; i++) {
-        initItem(allPersonList.value[i])
-    }
-    if(allPersonList.value.length<20){
-        for(let i=19-allPersonList.value.length;i>=0;i--){
-            initItem(mocklist[i])
-        }
+    // const tableLen = allPersonList.value.length
+    // for (let i = 0; i < tableLen; i++) {
+    //     initItem(allPersonList.value[i])
+    // }
+    // if(allPersonList.value.length<20){
+    //     for(let i=19-allPersonList.value.length;i>=0;i--){
+    //         initItem(mocklist[i])
+    //     }
+    // }
+    for(var i = 0;i<prizes.value.length;i++)
+    {
+        initItem(prizes.value[i])
     }
 
     
@@ -254,7 +273,7 @@ const transform = (targets: any[], duration: number) => {
                     if (luckyCardList.value.length) {
                         luckyCardList.value.forEach((cardIndex: any) => {
                             const item = objects.value[cardIndex]
-                            useElementStyle(item.element, {} as any, patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
+                            useElementStyle(item.element, prizes.value[cardIndex], patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
                         })
                     }
                     luckyTargets.value = [];
@@ -375,11 +394,11 @@ const startLottery = () => {
     rollBall(5, 3000)
 }
 const changeLuckyCount = (event:any)=>{
-    if(luckyCount.value >50){
-        luckyCount.value = 50;
+    if(luckyCount.value > maxLuckCount){
+        luckyCount.value = maxLuckCount;
         
         toast.open({
-            message: '单次抽奖人数不能超过50人',
+            message: `单次抽奖人数不能超过${maxLuckCount}人`,
             type: 'warning',
             position: 'top-right',
             duration: 1500
@@ -569,7 +588,7 @@ const stopLottery = async () => {
 
         luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
             if(person.prizeName){
-                let cardIndex = selectCard(luckyCardList.value, allPersonList.value.length)
+                let cardIndex = selectCard(luckyCardList.value, prizes.value.length)
                 luckyCardList.value.push(cardIndex)
                 let item = objects.value[cardIndex]
                 const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
