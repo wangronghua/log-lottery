@@ -1,7 +1,7 @@
 import { rgba } from '@/utils/color'
 import { IPersonConfig } from '@/types/storeType'
 
-export const useElementStyle = (element: any, person: IPersonConfig, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
+export const useElementStyle = (element: any, person: IPersonConfig, nickname:string, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
     let rate = cardSize.width/140
     let textSize = 14 * rate*1.5;
 
@@ -47,8 +47,8 @@ export const useElementStyle = (element: any, person: IPersonConfig, patternList
     if(person.headPic){
         element.children[0].children[0].src=person.headPic
     }
-    if (person.name) {
-        element.children[1].textContent = person.name
+    if (nickname) {
+        element.children[1].textContent = nickname
     }
     
     element.children[2].style.fontSize = textSize*0.8 + 'px'

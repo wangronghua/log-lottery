@@ -38,6 +38,7 @@ const objects = ref<any[]>([])
 const maxwidth = ref(0)
 const maxheight = ref(0)
 const coverbgobject = ref<any>()
+const hideNickName = ref(false)
 
 const targets = {
     grid: <any[]>[],
@@ -57,6 +58,14 @@ const luckyCardList = ref<number[]>([])
 const intervalTimer = ref<any>(null)
 const prizes = ref<any[]>([])
 
+function changeHideNickName(){
+    hideNickName.value = !hideNickName.value;
+    if(hideNickName.value){
+        localStorage.setItem('hideNickName','1');
+    }else{
+        localStorage.setItem('hideNickName','0');
+    }
+}
 // 填充数据，填满七行
 async function initTableData() {
     var data = await getLoadData();//获取已抽奖和未抽奖用户
@@ -129,7 +138,7 @@ const initItem = (item:any)=>{
     prizeName.innerHTML = `${item.prizeName||''}`;
     element.appendChild(prizeName);
 
-    element = useElementStyle(element, item, patternList.value, patternColor.value, cardColor.value, cardSize.value)
+    element = useElementStyle(element, item, item.name, patternList.value, patternColor.value, cardColor.value, cardSize.value)
     const object = new CSS3DObject(element);
     object.position.x = Math.random() * 4000 - 2000;
     object.position.y = Math.random() * 4000 - 2000;
@@ -140,6 +149,7 @@ const initItem = (item:any)=>{
     objects.value.push(object);
 };
 const init = () => {
+    hideNickName.value = localStorage.getItem('hideNickName')=='1';
     const felidView = 40;
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -244,7 +254,14 @@ const init = () => {
     enterLottery();
     render();
 }
-
+const processNickName = (name: string) => {
+    if(name===null||name.length==0)return name;
+    if(hideNickName.value){
+        return Array.from(name).slice(0, 1).join('')+'*'
+    }else{
+        return name
+    }
+}
 const transform = (targets: any[], duration: number) => {
     TWEEN.removeAll();
     if (intervalTimer.value) {
@@ -273,7 +290,7 @@ const transform = (targets: any[], duration: number) => {
                     if (luckyCardList.value.length) {
                         luckyCardList.value.forEach((cardIndex: any) => {
                             const item = objects.value[cardIndex]
-                            useElementStyle(item.element, prizes.value[cardIndex], patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
+                            useElementStyle(item.element, prizes.value[cardIndex],prizes.value[cardIndex].name, patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
                         })
                     }
                     luckyTargets.value = [];
@@ -600,7 +617,7 @@ const stopLottery = async () => {
                     }, 1200)
                     .easing(TWEEN.Easing.Exponential.InOut)
                     .onStart(() => {
-                        item.element = useElementStyle(item.element, person, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
+                        item.element = useElementStyle(item.element, person, processNickName(person.name), patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
                     })
                     .start()
                     .onComplete(() => {
@@ -728,7 +745,7 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
                 // objects.value[cardRandomIndexArr[i]].element=objects.value[personRandomIndexArr[i]].element;
                 // objects.value[personRandomIndexArr[i]].element = temp;
 
-                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
+                objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], processNickName(allPersonList.value[personRandomIndexArr[i]].name), patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
             }
         }
     }, 200)
@@ -818,7 +835,7 @@ const getLoadData = async ()=>{
                         <img :src="item.headPic" class="headpic"></img>
                     </div>
                     <div class="name">
-                        {{ item.name }}
+                        {{ processNickName(item.name) }}
                     </div>
                 </div>
             </div>
@@ -833,7 +850,7 @@ const getLoadData = async ()=>{
                     </div>
                     <div style="flex:1">
                         <div class="name">
-                            {{ item.name }}
+                            {{ processNickName(item.name) }}
                         </div>
                         <div class="prize">
                             {{ item.prizeName }}
@@ -869,12 +886,34 @@ const getLoadData = async ()=>{
                 单次抽<input class="luckyCount" v-model="luckyCount" @input="changeLuckyCount"></input> 
                 人</div>
 
+            <div style="margin-left: 8%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">
+                隐私保护
+                <div style="margin-left: 10px;" @click="changeHideNickName">
+                    <div v-if="hideNickName" class="hideNickName" style="border: 1px solid #FFFFFF;background: #FF2100;display:flex;"><div style="flex:1"></div>开<div class="circle" style="margin-right:3px;margin-left: 8px;"></div></div>
+                    <div v-else class="hideNickName" style="background: #BCBCBC;"><div class="circle" style="margin-left:3px;margin-right: 8px;"></div>关</div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-
+.hideNickName{
+    width: 70px;
+    border-radius: 55px;
+    font-size: 16px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    cursor:pointer;
+    .circle{
+        width: 25px;
+        height: 25px;
+        background: #FFFFFF;
+        border-radius: 25px;
+    }
+}
 .renyuantop{
     z-index: 10; 
 }
