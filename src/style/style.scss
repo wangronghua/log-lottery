@@ -15,11 +15,42 @@
     user-select: none;
     background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
     background-size:100% 100%;
+    
+
     .card-prize{
         display: none;
     }
     .card-name {
-        top: 60%;
+        position: absolute;
+        top: 55%;
+        left: 0;
+        right: 0;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color:#666666;
+        background-color: #fff;
+        width: 80%;
+        margin:auto;
+    
+        height: 40%;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+
+        white-space:pre-wrap;
+        word-break:break-all;
+        
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+        // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+        // animation-delay: 0.6s;
     }
 }
 .beforeDraw{
@@ -52,6 +83,28 @@
     background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
     background-size:100% 100%;
 
+    .card-name {
+        position: absolute;
+        top: 55%;
+        left: 0;
+        right: 0;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color:#666666;
+        background-color: #fff;
+        width: 80%;
+        margin:auto;
+    
+        height: 14%;
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+        // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+        // animation-delay: 0.6s;
+    }
     .card-prize{
         display: -webkit-box;
         -webkit-box-orient: vertical;
@@ -89,28 +142,6 @@
     left: 0;
     right: 0;
     display: flex;
-}
-.card-name {
-    position: absolute;
-    top: 55%;
-    left: 0;
-    right: 0;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color:#666666;
-    background-color: #fff;
-    width: 80%;
-    margin:auto;
-
-    height: 14%;
-    display: flex;
-    align-items:center;
-    justify-content:center;
-    // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
-    // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
-    // animation-delay: 0.6s;
 }
 .card-headpic{
     width:100%; 
