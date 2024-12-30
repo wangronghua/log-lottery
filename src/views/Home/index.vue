@@ -50,7 +50,7 @@ const notPrizeDrawList = ref<any[]>([])
 const hasPrizeDrawList = ref<any[]>([])
 const allPersonList = ref<any[]>([])
 const maxLuckCount = 40
-const luckyCount = ref(maxLuckCount)
+const luckyCount = ref(1)
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
@@ -407,7 +407,10 @@ const startLottery = () => {
         position: 'top-right',
         duration: 1500
     })
-    currentStatus.value = 2
+    currentStatus.value =100
+    setTimeout(function(){
+        currentStatus.value = 2
+    },2000);
     rollBall(5, 3000)
 }
 const changeLuckyCount = (event:any)=>{
