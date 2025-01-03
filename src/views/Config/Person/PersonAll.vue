@@ -22,6 +22,7 @@ const handleFileChange = async (e: Event) => {
     let workBook = XLSX.read(dataBinary, { type: 'binary', cellDates: true })
     let workSheet = workBook.Sheets[workBook.SheetNames[0]]
     const excelData = XLSX.utils.sheet_to_json(workSheet)
+    debugger
     const allData = addOtherInfo(excelData);
     personConfig.resetPerson()
     personConfig.addNotPersonList(allData)
@@ -80,20 +81,12 @@ const delPersonItem = (row: IPersonConfig) => {
 
 const tableColumns = [
     {
-        label: '编号',
-        props: 'uid',
-    },
-    {
         label: '姓名',
         props: 'name',
     },
     {
-        label: '部门',
-        props: 'department',
-    },
-    {
-        label: '身份',
-        props: 'identity',
+        label: '手机号',
+        props: 'phone',
     },
     {
         label: '是否已中奖',

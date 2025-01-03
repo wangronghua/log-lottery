@@ -56,7 +56,7 @@ const targets = {
 
 const luckyTargets = ref<any[]>([])
 const luckyCardList = ref<number[]>([])
-let luckyCount = ref(10)
+let luckyCount = ref(44)
 const personPool = ref<IPersonConfig[]>([])
 
 const intervalTimer = ref<any>(null)
@@ -395,7 +395,7 @@ const startLottery = () => {
 
         return;
     }
-    luckyCount.value = 10
+    luckyCount.value = 44
     // 自定义抽奖个数
 
     let leftover = currentPrize.value.count - currentPrize.value.isUsedCount
