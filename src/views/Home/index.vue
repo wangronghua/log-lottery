@@ -809,7 +809,7 @@ onUnmounted(() => {
 
     <!-- <LuckyView :luckyPersonList="luckyTargets"  ref="LuckyViewRef"></LuckyView> -->
     <!-- <PlayMusic class="absolute right-0 bottom-1/2"></PlayMusic> -->
-    <PrizeList class="absolute left-0 top-32"></PrizeList>
+    <PrizeList v-show="currentStatus!==3" class="absolute left-0 top-32"></PrizeList>
 </template>
 
 <style scoped lang="scss">
