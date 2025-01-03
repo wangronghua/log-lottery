@@ -46,6 +46,9 @@ const camera = ref()
 const renderer = ref()
 const controls = ref()
 const objects = ref<any[]>([])
+const maxwidth = ref(0)
+const maxheight = ref(0)
+const coverbgobject = ref<any>()
 
 const targets = {
     grid: <any[]>[],
@@ -95,19 +98,31 @@ const init = () => {
     camera.value = new PerspectiveCamera(felidView, aspect, nearPlane, farPlane);
     camera.value.position.z = cameraZ.value
     renderer.value = new CSS3DRenderer()
-    renderer.value.setSize(width, height * 0.9)
+    maxwidth.value = Math.floor(width);
+    maxheight.value = Math.floor(height);
+    
+    var leftwidth = Math.floor(width*0.205);
+    var leftinnerWidth = Math.floor((leftwidth-40)/3)-1;
+
+    document.documentElement.style.setProperty('--renyuan-width', leftinnerWidth+'px');
+    document.documentElement.style.setProperty('--headpic-width', Math.floor(width*0.036)+'px');
+    document.documentElement.style.setProperty('--headpic-padding', Math.floor(width*0.004)+'px');
+
+    renderer.value.setSize(maxwidth.value, maxheight.value)
     renderer.value.domElement.style.position = 'absolute';
     // 垂直居中
-    renderer.value.domElement.style.paddingTop = '50px'
-    renderer.value.domElement.style.top = '50%';
-    renderer.value.domElement.style.left = '50%';
+    renderer.value.domElement.className="beforeDraw";
     renderer.value.domElement.style.transform = 'translate(-50%, -50%)';
     WebGLoutput!.appendChild(renderer.value.domElement);
 
     controls.value = new TrackballControls(camera.value, renderer.value.domElement);
     controls.value.rotateSpeed = 1;
     controls.value.staticMoving = true;
-    controls.value.minDistance = 500;
+    controls.value.noZoom = true; // 禁止缩放
+    controls.value.noRotate = true; //https://www.wenjiangs.com/doc/rjvdcbep
+    // controls.value.minZoom=5;
+    // controls.value.screen={left:0,top:0,width:maxwidth.value,height:maxheight.value}
+    controls.value.minDistance = 500;//动画区域的大小
     controls.value.maxDistance = 6000;
     controls.value.addEventListener('change', render);
 
@@ -141,6 +156,14 @@ const init = () => {
         objects.value.push(object);
     }
 
+    var coverbg = document.createElement('div');
+    coverbg.className = 'coverbg'
+    coverbgobject.value = new CSS3DObject(coverbg);
+    coverbgobject.value.position.x = 0;
+    coverbgobject.value.position.y = 0;
+    coverbgobject.value.position.z = 0;
+    scene.value.add(coverbgobject.value);
+
     createTableVertices();
     createSphereVertices();
     createHelixVertices();
@@ -163,15 +186,17 @@ const init = () => {
         let i = 0;
         const objLength = objects.value.length;
         const vector = new Vector3();
+        //控制球大小
+        let ballsize = 700
 
         for (; i < objLength; ++i) {
             let phi = Math.acos(-1 + (2 * i) / objLength);
             let theta = Math.sqrt(objLength * Math.PI) * phi;
             const object = new Object3D();
 
-            object.position.x = 800 * Math.cos(theta) * Math.sin(phi);
-            object.position.y = 800 * Math.sin(theta) * Math.sin(phi);
-            object.position.z = -800 * Math.cos(phi);
+            object.position.x = ballsize * Math.cos(theta) * Math.sin(phi);
+            object.position.y = ballsize * Math.sin(theta) * Math.sin(phi);
+            object.position.z = -ballsize * Math.cos(phi);
 
             // rotation object 
 
@@ -355,6 +380,11 @@ const enterLottery = async () => {
     if (!intervalTimer.value) {
         randomBallData()
     }
+
+    if(coverbgobject.value.element.parentElement!=null){
+        coverbgobject.value.element.parentElement.parentElement.className="beforeDraw"
+    }
+
     if (patternList.value.length) {
         for(let i=0;i<patternList.value.length;i++){
             if(i<rowCount.value*7){
@@ -435,12 +465,87 @@ const stopLottery = async () => {
     canOperate.value = false
     rollBall(0, 1)
 
-    const windowSize = { width: window.innerWidth, height: window.innerHeight }
+
+
+    let maxrowcount = 5;//最多5行
+    let maxcolumncount = 13;//最多10列
+
+    let columncount = 10;//如果都没匹配默认10列
+    let rowcount = Math.ceil(luckyTargets.value.length / columncount)
+   
+    let cwidth = 0;
+    let cheight = 0;
+    
+    let tcwidth = 0;
+    let tcheight = 0;
+
+    //场景宽度
+    var scenewidth = coverbgobject.value.element.parentElement.getBoundingClientRect().width;
+    //场景比例
+    var scenerate = maxwidth.value/scenewidth;
+
+    for(var i=maxrowcount;i>=1;i--){
+        var tempcolcount = Math.ceil(luckyTargets.value.length/i);
+        if(tempcolcount<=maxcolumncount){
+
+            
+            let maxcwidth = Math.floor(maxwidth.value*scenerate/(1.4955*(tempcolcount*1.1-0.1)));
+            let maxcheight = Math.floor((maxheight.value*0.94-112)*scenerate/(1.4955*(i*1.05-0.05)));
+
+            
+            if(maxcwidth*20/14<maxcheight){
+                tcwidth = maxcwidth;
+                tcheight = maxcwidth*20/14;
+            }else{
+                tcheight = maxcheight;
+                tcwidth = maxcheight*14/20;
+            }    
+
+            if(tcwidth>cwidth){
+                columncount = tempcolcount;
+                rowcount = i;
+                cwidth=tcwidth;
+                cheight=tcheight
+            }
+        }
+    }
+
+    let colspace = cwidth*0.1
+    let rowspace = cheight*0.05
+
+    
+    coverbgobject.value.element.parentElement.parentElement.className="afterDraw"
+
+    new TWEEN.Tween(coverbgobject.value.position)
+                .to({
+                    x: 0,
+                    y: 0,
+                    z: 800
+                }, 2200)
+                .easing(TWEEN.Easing.Exponential.InOut)
+                .onStart(() => {
+                })
+                .onComplete(() => {
+                
+                })
+                .start()
+        new TWEEN.Tween(coverbgobject.value.rotation)
+            .to({
+                x: 0,
+                y: 0,
+                z: 0
+            }, 900)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .start()
+            .onComplete(() => {
+            })
+
     luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
         let cardIndex = selectCard(luckyCardList.value, tableData.value.length, person.id)
         luckyCardList.value.push(cardIndex)
         let item = objects.value[cardIndex]
-        const { xTable, yTable } = useElementPosition(item, rowCount.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, windowSize, index)
+        const { xTable, yTable } = useElementPosition(item,columncount,rowcount,colspace,rowspace, { width: cwidth , height: cheight  }, index)
+        //useElementPosition(item, rowCount.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, windowSize, index)
         new TWEEN.Tween(item.position)
             .to({
                 x: xTable,
@@ -449,7 +554,7 @@ const stopLottery = async () => {
             }, 1200)
             .easing(TWEEN.Easing.Exponential.InOut)
             .onStart(() => {
-                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cardSize.value.width * 2, height: cardSize.value.height * 2 }, textSize.value * 2, 'lucky')
+                item.element = useElementStyle(item.element, person, cardIndex, patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight }, 'lucky')
             })
             .start()
             .onComplete(() => {
@@ -509,14 +614,16 @@ const confettiFire = () => {
             particleCount: 2,
             angle: 60,
             spread: 55,
-            origin: { x: 0 }
+            origin: { x: 0 },
+            gravity:10
         });
         // and launch a few from the right edge
         confetti({
             particleCount: 2,
             angle: 120,
             spread: 55,
-            origin: { x: 1 }
+            origin: { x: 1 },
+            gravity:10
         });
 
         // keep going until we are out of time
@@ -527,24 +634,29 @@ const confettiFire = () => {
     centerFire(0.25, {
         spread: 26,
         startVelocity: 55,
+        gravity:10
     });
     centerFire(0.2, {
         spread: 60,
+        gravity:10
     });
     centerFire(0.35, {
         spread: 100,
         decay: 0.91,
-        scalar: 0.8
+        scalar: 0.8,
+        gravity:10
     });
     centerFire(0.1, {
         spread: 120,
         startVelocity: 25,
         decay: 0.92,
-        scalar: 1.2
+        scalar: 1.2,
+        gravity:10
     });
     centerFire(0.1, {
         spread: 120,
         startVelocity: 45,
+        gravity:10
     });
 }
 const centerFire = (particleRatio: number, opts: any) => {

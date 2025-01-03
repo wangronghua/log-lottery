@@ -70,22 +70,45 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
 //     return element
 // }
 
-export const useElementPosition = (element: any, count: number, cardSize: { width: number, height: number }, windowSize: { width: number, height: number }, cardIndex: number) => {
-    let xTable = 0
-    let yTable = 0
-    const centerPosition = {
-        x: 0,
-        y: windowSize.height / 2 - cardSize.height / 2
-    }
-    const index = cardIndex % 5
-    if (index == 0) {
-        xTable = centerPosition.x
-        yTable = centerPosition.y - Math.floor(cardIndex / 5) * (cardSize.height + 60)
-    }
-    else {
-        xTable = index % 2 === 0 ? Math.ceil(index / 2) * (cardSize.width + 100) : -Math.ceil(index / 2) * (cardSize.width + 100)
-        yTable = centerPosition.y - Math.floor(cardIndex / 5) * (cardSize.height + 60)
+export const useElementPosition=(element:any,columncount:number,rowcount:number,colspace:number,rowspace:number,cardSize:{width:number,height:number},cardIndex:number)=>{
+    const colindex =cardIndex%columncount
+    const rowindex = Math.floor(cardIndex / columncount)
+
+    if(columncount%2==0){
+        element.position.x = (colindex%2==0?-1:1)* ((Math.ceil((colindex+1)/2)-0.5)*(cardSize.width+colspace));
+    }else{
+        element.position.x = (colindex%2==0?1:-1)* (Math.ceil(colindex/2)*(cardSize.width+colspace));
     }
 
-    return { xTable, yTable }
+    if(rowcount%2==0){
+        element.position.y = (Math.floor(rowcount/2)-0.5)*(cardSize.height+rowspace);
+    }else{
+        element.position.y = Math.floor(rowcount/2)*(cardSize.height+rowspace);
+    }
+
+    // element.position.y = rowcount%2==0?(rowcount*(cardSize.height+rowspace)/2 - 0.5*rowspace):(cardSize.height/2 + Math.floor(rowcount/2)*(cardSize.height+rowspace))   //cardSize.height/2 + Math.floor(rowcount/2)*(cardSize.height+rowspace)
+    element.position.y = element.position.y - rowindex*(cardSize.height+rowspace)
+
+    // element.position.y = element.position.y-0.5*cardSize.height
+    // element.position.x = element.position.x-0.5*cardSize.width
+    return element
 }
+// export const useElementPosition = (element: any, count: number, cardSize: { width: number, height: number }, windowSize: { width: number, height: number }, cardIndex: number) => {
+//     let xTable = 0
+//     let yTable = 0
+//     const centerPosition = {
+//         x: 0,
+//         y: windowSize.height / 2 - cardSize.height / 2
+//     }
+//     const index = cardIndex % 5
+//     if (index == 0) {
+//         xTable = centerPosition.x
+//         yTable = centerPosition.y - Math.floor(cardIndex / 5) * (cardSize.height + 60)
+//     }
+//     else {
+//         xTable = index % 2 === 0 ? Math.ceil(index / 2) * (cardSize.width + 100) : -Math.ceil(index / 2) * (cardSize.width + 100)
+//         yTable = centerPosition.y - Math.floor(cardIndex / 5) * (cardSize.height + 60)
+//     }
+
+//     return { xTable, yTable }
+// }

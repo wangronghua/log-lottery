@@ -1,64 +1,145 @@
+.w-screen{
+    background-image: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/bg.png?2);
+    background-size:100% 100%;
+}
+.coverbg{
+    width: 2000%;
+    height: 1200%;
+    background-color: #333333;
+    display: none;
+    opacity: 0.7;
+}
 .element-card {
     cursor: default;
     text-align: center;
     user-select: none;
-    .card-id {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
+    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
+    background-size:100% 100%;
+    
 
+    .card-prize{
+        display: none;
+    }
     .card-name {
         position: absolute;
-        top: 40px;
-        left: 0px;
+        top: 55%;
+        left: 0;
         right: 0;
-        font-weight: bold;
+        font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-    }
+        color:#666666;
+        background-color: #fff;
+        width: 80%;
+        margin:auto;
+    
+        height: 40%;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
 
-    .card-detail {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 15px;
+        white-space:pre-wrap;
+        word-break:break-all;
+        
+        display: flex;
+        align-items:center;
+        justify-content:center;
+        // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+        // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+        // animation-delay: 0.6s;
     }
+}
+.beforeDraw{
+    top:53%;
+    left:48%;
+}
+.afterDraw{
+    top:50%;
+    left:50%;
+}
+
+
+
+.afterDraw .coverbg{
+    display: inherit;
+}
+.beforeDraw .coverbg{
+    display: none;
 }
 
 .lucky-element-card {
     cursor: default;
     text-align: center;
-    &::before {
-        background-color: linear-gradient(-45deg, #e81cff 0%, #40c9ff 100%);
-        border: 1px solid linear-gradient(-45deg, #e81cff 0%, #40c9ff 100%);
-    }
-
-    .card-id {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
+    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
+    background-size:100% 100%;
 
     .card-name {
         position: absolute;
-        top: 40px;
-        left: 0px;
+        top: 55%;
+        left: 0;
         right: 0;
-        font-weight: bold;
+        font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color:#666666;
+        background-color: #fff;
+        width: 80%;
+        margin:auto;
+    
+        height: 14%;
+        display: flex;
+        align-items:center;
+        justify-content:center;
         // -webkit-animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
         // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
         // animation-delay: 0.6s;
     }
+    .card-prize{
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
-    .card-detail {
         position: absolute;
+        top: 71%;
         left: 0;
         right: 0;
-        bottom: 15px;
+        font-weight: 500;
+        background-color: #fff;
+        color: #333;
+        width: 80%;
+        margin:auto;
+
+        white-space:pre-wrap;
+        word-break:break-all;
+
+            
+        height: 23%;
+        display: flex;
+        align-items:center;
+        justify-content:center;
     }
+}
+
+.card-headpic-c{
+    border-radius:50%; overflow:hidden;
+    width:60%;
+    margin:auto;
+    position: absolute;
+    top:7%;
+    left: 0;
+    right: 0;
+    display: flex;
+}
+.card-headpic{
+    width:100%; 
+    height:auto;
+    aspect-ratio:1;
+    object-fit: cover;
 }
