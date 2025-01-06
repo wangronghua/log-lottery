@@ -25,21 +25,12 @@ const handleMoveNotPerson = (row: IPersonConfig) => {
 
 const tableColumnsList = [
     {
-        label: '编号',
-        props: 'uid',
-        sort: true
-    },
-    {
         label: '姓名',
         props: 'name',
     },
     {
-        label: '部门',
-        props: 'department',
-    },
-    {
-        label: '身份',
-        props: 'identity',
+        label: '手机',
+        props: 'phone',
     },
     {
         label: '奖品',
@@ -61,21 +52,12 @@ const tableColumnsList = [
 ]
 const tableColumnsDetail = [
     {
-        label: '编号',
-        props: 'uid',
-        sort: true
-    },
-    {
         label: '姓名',
         props: 'name',
     },
     {
-        label: '部门',
-        props: 'department',
-    },
-    {
-        label: '身份',
-        props: 'identity',
+        label: '手机',
+        props: 'phone',
     },
     {
         label: '奖品',
