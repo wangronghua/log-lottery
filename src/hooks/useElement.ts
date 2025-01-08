@@ -1,7 +1,9 @@
 import { rgba } from '@/utils/color'
 import { IPersonConfig } from '@/types/storeType'
 
-export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, textSize: number, mod: 'default' | 'lucky'|'sphere' = 'default') => {
+export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
+    let rate = cardSize.width/140
+    let textSize = 14 * rate*1.5;
     if (patternList.includes(index+1)&&mod=='default') {
         element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
     }
@@ -23,14 +25,14 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     }
     // 等比放大
     element.addEventListener('mouseenter', (ev: MouseEvent) => {
-        const target = ev.target as HTMLElement
-        target.style.border = `1px solid ${rgba(cardColor, 0.75)}`
-        target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.75)}`
+        // const target = ev.target as HTMLElement
+        // target.style.border = `1px solid ${rgba(cardColor, 0.75)}`
+        // target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.75)}`
     })
     element.addEventListener('mouseleave', (ev: MouseEvent) => {
-        const target = ev.target as HTMLElement
-        target.style.border = `1px solid ${rgba(cardColor, 0.25)}`
-        target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
+        // const target = ev.target as HTMLElement
+        // target.style.border = `1px solid ${rgba(cardColor, 0.25)}`
+        // target.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
     })
     element.children[0].style.fontSize = textSize * 0.5 + 'px';
     if (person.uid) {

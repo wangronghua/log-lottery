@@ -146,7 +146,7 @@ const init = () => {
         detail.innerHTML = `${tableData.value[i].department}<br/>${tableData.value[i].identity}`;
         element.appendChild(detail);
 
-        element = useElementStyle(element, tableData.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value)
+        element = useElementStyle(element, tableData.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value)
         const object = new CSS3DObject(element);
         object.position.x = Math.random() * 4000 - 2000;
         object.position.y = Math.random() * 4000 - 2000;
@@ -262,7 +262,7 @@ const transform = (targets: any[], duration: number) => {
                     if (luckyCardList.value.length) {
                         luckyCardList.value.forEach((cardIndex: any) => {
                             const item = objects.value[cardIndex]
-                            useElementStyle(item.element, {} as any, i, patternList.value, patternColor.value, cardColor.value, cardSize.value, textSize.value, 'sphere')
+                            useElementStyle(item.element, {} as any, i, patternList.value, patternColor.value, cardColor.value, cardSize.value, 'sphere')
                         })
                     }
                     luckyTargets.value = [];
@@ -382,7 +382,7 @@ const enterLottery = async () => {
     }
 
     if(coverbgobject.value.element.parentElement!=null){
-        coverbgobject.value.element.parentElement.parentElement.className="beforeDraw"
+        coverbgobject.value.element.parentElement.parentElement.className="beforeDraw2"
     }
 
     if (patternList.value.length) {
@@ -686,7 +686,7 @@ const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
             personRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
         }
         for (let i = 0; i < cardRandomIndexArr.length; i++) {
-            objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, textSize.value, mod)
+            objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
         }
     }, 200)
 }

@@ -1,5 +1,5 @@
 .w-screen{
-    background-image: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/bg.png?2);
+    background-image: url(../assets/images/bg.jpg);
     background-size:100% 100%;
 }
 .coverbg{
@@ -54,10 +54,10 @@
     }
 }
 .beforeDraw{
-    top:53%;
-    left:48%;
+    top:50%;
+    left:50%;
 }
-.afterDraw{
+.afterDraw,.beforeDraw2{
     top:50%;
     left:50%;
 }
@@ -67,7 +67,7 @@
 .afterDraw .coverbg{
     display: inherit;
 }
-.beforeDraw .coverbg{
+.beforeDraw .coverbg,.beforeDraw2 .coverbg{
     display: none;
 }
 
