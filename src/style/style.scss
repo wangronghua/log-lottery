@@ -70,8 +70,8 @@
 }
 
 .beforeDraw{
-    top:55%;
-    left:50%;
+    top:58%;
+    left:53%;
     .element-card,.pattern-element-card {
         background: url(../assets/images/card1.png);
         color:#E8BB97;
@@ -90,14 +90,14 @@
     }
 }
 .afterDraw,.beforeDraw2{
-    top:50%;
-    left:50%;
     .element-card,.pattern-element-card {
-        background: url(../assets/images/card2.png);
-        color:#C00000;
+        background: url(../assets/images/card1.png);
+        color:#E8BB97;
     }
 }
 .beforeDraw2{
+    top:50%;
+    left:50%;
     .element-card,.pattern-element-card {
         .card-name {
             top: 15%;
@@ -110,6 +110,8 @@
     }
 }
 .afterDraw{
+    top:50%;
+    left:50%;
     .element-card,.pattern-element-card {
         .card-name {
             top: 10%;
