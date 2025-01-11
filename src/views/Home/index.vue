@@ -380,13 +380,13 @@ const enterLottery = async () => {
         coverbgobject.value.element.parentElement.parentElement.className="beforeDraw2"
     }
 
-    if (patternList.value.length) {
-        for(let i=0;i<patternList.value.length;i++){
-            if(i<rowCount.value*7){
-                objects.value[patternList.value[i]-1].element.style.backgroundColor = rgba(cardColor.value, Math.random() * 0.5 + 0.25)
-            }
-        }
-    }
+    // if (patternList.value.length) {
+    //     for(let i=0;i<patternList.value.length;i++){
+    //         if(i<rowCount.value*7){
+    //             objects.value[patternList.value[i]-1].element.style.backgroundColor = rgba(cardColor.value, Math.random() * 0.5 + 0.25)
+    //         }
+    //     }
+    // }
     canOperate.value = false
     await transform(targets.sphere, 1000)
     currentStatus.value = 1

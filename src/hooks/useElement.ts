@@ -4,17 +4,18 @@ import { IPersonConfig } from '@/types/storeType'
 export const useElementStyle = (element: any, person: IPersonConfig, index: number, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
     let rate = cardSize.width/140
     let textSize = 14 * rate*1.5;
-    if (patternList.includes(index+1)&&mod=='default') {
-        element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
-    }
-    else if(mod=='sphere'||mod=='default') {
-        element.style.backgroundColor = rgba(cardColor, Math.random() * 0.5 + 0.25)
-    }
-    else if(mod=='lucky'){
-        element.style.backgroundColor = rgba(cardColor, 0.8)
-    }
-    element.style.border = `1px solid ${rgba(cardColor, 0.25)}`
+    // if (patternList.includes(index+1)&&mod=='default') {
+    //     element.style.backgroundColor = rgba(patternColor, Math.random() * 0.2 + 0.8)
+    // }
+    // else if(mod=='sphere'||mod=='default') {
+    //     element.style.backgroundColor = rgba(cardColor, Math.random() * 0.5 + 0.25)
+    // }
+    // else if(mod=='lucky'){
+    //     element.style.backgroundColor = rgba(cardColor, 0.8)
+    // }
+    // element.style.border = `1px solid ${rgba(cardColor, 0.25)}`
     element.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
+    element.style.borderRadius = `10px`
     element.style.width = `${cardSize.width}px`;
     element.style.height = `${cardSize.height}px`;
     if (mod == 'lucky') {
