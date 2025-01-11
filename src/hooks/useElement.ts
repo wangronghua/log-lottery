@@ -50,7 +50,7 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     // }
 
     element.children[0].style.fontSize = textSize * 1 + 'px';
-    if (person.uid) {
+    if (person.name) {
         element.children[0].textContent = person.name;
     }
 
