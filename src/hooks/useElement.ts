@@ -16,7 +16,6 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     // element.style.border = `1px solid ${rgba(cardColor, 0.25)}`
     element.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
     element.style.borderRadius = `${rate*10}px`
-    console.log(rate)
     element.style.width = `${cardSize.width}px`;
     element.style.height = `${cardSize.height}px`;
     if (mod == 'lucky') {
@@ -51,12 +50,12 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     //     element.children[1].textContent = person.name
     // }
 
-    element.children[0].style.fontSize = textSize * 1 + 'px';
+    element.children[0].style.fontSize = textSize * 1.5 + 'px';
     if (person.name) {
         element.children[0].textContent = person.name;
     }
 
-    element.children[1].style.fontSize = textSize * 1 + 'px'
+    element.children[1].style.fontSize = textSize * 1.5 + 'px'
     if (person.department) {
         // element.children[2].innerHTML = `${person.department ? person.department : ''}`
         element.children[1].textContent = person.department

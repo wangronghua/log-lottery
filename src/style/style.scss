@@ -13,28 +13,21 @@
     cursor: default;
     text-align: center;
     user-select: none;
-    // background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
-    // background-size:100% 100%;
-    
 
-    .card-prize{
-        display: none;
-    }
     .card-name {
         position: absolute;
-        top: 5%;
+        top: 15%;
         left: 0;
         right: 0;
         font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color:#666666;
         // background-color: #fff;
         width: 80%;
         margin:auto;
     
-        height: 40%;
+        height: 20%;
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
@@ -54,14 +47,13 @@
     }
     .card-department {
         position: absolute;
-        top: 25%;
+        top: 40%;
         left: 0;
         right: 0;
         font-weight: 500;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color:#666666;
         // background-color: #fff;
         width: 80%;
         margin:auto;
@@ -90,11 +82,11 @@
     top:50%;
     left:50%;
     .element-card {
-        background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1);
+        background: url(../assets/images/card1.png);
         background-size:100% 100%;
     }
     .pattern-element-card{
-        background: url(../assets/images/card.png);
+        background: url(../assets/images/card2.png);
         background-size:100% 100%;
     }
 }
@@ -102,11 +94,11 @@
     top:50%;
     left:50%;
     .element-card {
-        background: url(../assets/images/card.png);
+        background: url(../assets/images/card2.png);
         background-size:100% 100%;
     }
     .pattern-element-card{
-        background: url(../assets/images/card.png);
+        background: url(../assets/images/card2.png);
         background-size:100% 100%;
     }
 }
@@ -123,7 +115,7 @@
 .lucky-element-card {
     cursor: default;
     text-align: center;
-    background: url(../assets/images/card.png);
+    background: url(../assets/images/card2.png);
     // background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
     background-size:100% 100%;
 
@@ -181,47 +173,4 @@
         // animation: tracking-in-expand-fwd 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
         // animation-delay: 0.6s;
     }
-    .card-prize{
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        position: absolute;
-        top: 71%;
-        left: 0;
-        right: 0;
-        font-weight: 500;
-        background-color: #fff;
-        color: #333;
-        width: 80%;
-        margin:auto;
-
-        white-space:pre-wrap;
-        word-break:break-all;
-
-            
-        height: 23%;
-        display: flex;
-        align-items:center;
-        justify-content:center;
-    }
-}
-
-.card-headpic-c{
-    border-radius:50%; overflow:hidden;
-    width:60%;
-    margin:auto;
-    position: absolute;
-    top:7%;
-    left: 0;
-    right: 0;
-    display: flex;
-}
-.card-headpic{
-    width:100%; 
-    height:auto;
-    aspect-ratio:1;
-    object-fit: cover;
 }
