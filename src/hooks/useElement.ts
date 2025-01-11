@@ -15,7 +15,8 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     // }
     // element.style.border = `1px solid ${rgba(cardColor, 0.25)}`
     element.style.boxShadow = `0 0 12px ${rgba(cardColor, 0.5)}`
-    element.style.borderRadius = `10px`
+    element.style.borderRadius = `${rate*10}px`
+    console.log(rate)
     element.style.width = `${cardSize.width}px`;
     element.style.height = `${cardSize.height}px`;
     if (mod == 'lucky') {
