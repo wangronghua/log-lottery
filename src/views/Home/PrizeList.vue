@@ -320,6 +320,9 @@ onMounted(() => {
     border-bottom-right-radius: 20px;
     z-index: -1;
 }
+.card-title{
+    font-size:1rem;
+}
 
 @keyframes an-at-keyframe-css-at-rule-that-translates-via-the-transform-property-the-background-by-negative-25-percent-of-its-width-so-that-it-gives-a-nice-border-animation_-We-use-the-translate-property-to-have-a-nice-transition-so-it_s-not-a-jerk-of-a-start-or-stop {
     to {
