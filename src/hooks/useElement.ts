@@ -18,10 +18,7 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     element.style.borderRadius = `${rate*10}px`
     element.style.width = `${cardSize.width}px`;
     element.style.height = `${cardSize.height}px`;
-    if (mod == 'lucky') {
-        element.className = 'lucky-element-card'
-    }
-    else if(patternList.includes(index+1)&&mod=='default'){
+    if(patternList.includes(index+1)&&mod=='default'){
         element.className = 'pattern-element-card'
     }
     else {
