@@ -22,7 +22,6 @@ const handleFileChange = async (e: Event) => {
     let workBook = XLSX.read(dataBinary, { type: 'binary', cellDates: true })
     let workSheet = workBook.Sheets[workBook.SheetNames[0]]
     const excelData = XLSX.utils.sheet_to_json(workSheet)
-    debugger
     const allData = addOtherInfo(excelData);
     personConfig.resetPerson()
     personConfig.addNotPersonList(allData)
@@ -51,7 +50,7 @@ const exportData = () => {
     dataString = dataString
         .replaceAll(/uid/g, '编号')
         .replaceAll(/isWin/g, '是否中奖')
-        .replaceAll(/department/g, '部门')
+        .replaceAll(/department/g, '机构')
         .replaceAll(/name/g, '姓名')
         .replaceAll(/identity/g, '身份')
         .replaceAll(/prizeName/g, '获奖')
@@ -85,8 +84,8 @@ const tableColumns = [
         props: 'name',
     },
     {
-        label: '手机号',
-        props: 'phone',
+        label: '机构',
+        props: 'department',
     },
     {
         label: '是否已中奖',

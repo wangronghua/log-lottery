@@ -131,20 +131,15 @@ const init = () => {
         let element = document.createElement('div');
         element.className = 'element-card';
 
-        const number = document.createElement('div');
-        number.className = 'card-id';
-        number.textContent = tableData.value[i].uid;
-        element.appendChild(number);
-
         const symbol = document.createElement('div');
         symbol.className = 'card-name';
         symbol.textContent = tableData.value[i].name;
         element.appendChild(symbol);
 
-        const detail = document.createElement('div');
-        detail.className = 'card-detail';
-        detail.innerHTML = `${tableData.value[i].department}<br/>${tableData.value[i].identity}`;
-        element.appendChild(detail);
+        const department = document.createElement('div');
+        department.className = 'card-department';
+        department.innerHTML = `${tableData.value[i].department}<br/>${tableData.value[i].identity}`;
+        element.appendChild(department);
 
         element = useElementStyle(element, tableData.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value)
         const object = new CSS3DObject(element);

@@ -29,8 +29,8 @@ const tableColumnsList = [
         props: 'name',
     },
     {
-        label: '手机',
-        props: 'phone',
+        label: '机构',
+        props: 'department',
     },
     {
         label: '奖品',
@@ -56,8 +56,8 @@ const tableColumnsDetail = [
         props: 'name',
     },
     {
-        label: '手机',
-        props: 'phone',
+        label: '机构',
+        props: 'department',
     },
     {
         label: '奖品',
