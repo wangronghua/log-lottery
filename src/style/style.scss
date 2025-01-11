@@ -9,7 +9,7 @@
     display: none;
     opacity: 0.7;
 }
-.element-card {
+.element-card,.pattern-element-card {
     cursor: default;
     text-align: center;
     user-select: none;
@@ -85,10 +85,15 @@
         // animation-delay: 0.6s;
     }
 }
+
 .beforeDraw{
     top:50%;
     left:50%;
     .element-card {
+        background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1);
+        background-size:100% 100%;
+    }
+    .pattern-element-card{
         background: url(../assets/images/card.png);
         background-size:100% 100%;
     }

@@ -20,6 +20,9 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
     if (mod == 'lucky') {
         element.className = 'lucky-element-card'
     }
+    else if(patternList.includes(index+1)&&mod=='default'){
+        element.className = 'pattern-element-card'
+    }
     else {
         element.className = 'element-card'
     }
