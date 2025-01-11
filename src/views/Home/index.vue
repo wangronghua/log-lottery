@@ -670,20 +670,20 @@ const setDefaultPersonList = () => {
 }
 // 随机替换数据
 const randomBallData = (mod: 'default' | 'lucky' | 'sphere' = 'default') => {
-    // 两秒执行一次
-    intervalTimer.value = setInterval(() => {
-        // 产生随机数数组
-        const indexLength = 4
-        const cardRandomIndexArr: number[] = []
-        const personRandomIndexArr: number[] = []
-        for (let i = 0; i < indexLength; i++) {
-            cardRandomIndexArr.push(Math.round(Math.random() * (tableData.value.length - 1)))
-            personRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
-        }
-        for (let i = 0; i < cardRandomIndexArr.length; i++) {
-            objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
-        }
-    }, 200)
+    // // 两秒执行一次
+    // intervalTimer.value = setInterval(() => {
+    //     // 产生随机数数组
+    //     const indexLength = 4
+    //     const cardRandomIndexArr: number[] = []
+    //     const personRandomIndexArr: number[] = []
+    //     for (let i = 0; i < indexLength; i++) {
+    //         cardRandomIndexArr.push(Math.round(Math.random() * (tableData.value.length - 1)))
+    //         personRandomIndexArr.push(Math.round(Math.random() * (allPersonList.value.length - 1)))
+    //     }
+    //     for (let i = 0; i < cardRandomIndexArr.length; i++) {
+    //         objects.value[cardRandomIndexArr[i]].element = useElementStyle(objects.value[cardRandomIndexArr[i]].element, allPersonList.value[personRandomIndexArr[i]], cardRandomIndexArr[i], patternList.value, patternColor.value, cardColor.value, { width: cardSize.value.width, height: cardSize.value.height }, mod)
+    //     }
+    // }, 200)
 }
 // 监听键盘
 const listenKeyboard = () => {
