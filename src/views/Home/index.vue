@@ -22,6 +22,7 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import { date } from 'zod'
 
 const toast = useToast();
 const router = useRouter()
@@ -300,7 +301,7 @@ function animation() {
 // // 旋转的动画
 function rollBall(rotateY: number, duration: number) {
     TWEEN.removeAll();
-
+    console.log('rollball',new Date());
     return new Promise((resolve) => {
         scene.value.rotation.y = 0;
         ballRotationY.value = Math.PI * rotateY * 1000
@@ -320,9 +321,11 @@ function rollBall(rotateY: number, duration: number) {
             .start()
             .onStop(() => {
                 resolve('')
+                console.log('rollball stop',new Date());
             })
             .onComplete(() => {
                 resolve('')
+                console.log('rollball onComplete',new Date());
             })
     })
 }
@@ -390,7 +393,7 @@ const enterLottery = async () => {
     canOperate.value = false
     await transform(targets.sphere, 1000)
     currentStatus.value = 1
-    rollBall(0.1, 2000)
+    rollBall(1, 20000)
 }
 // 开始抽奖
 const startLottery = () => {
@@ -448,7 +451,7 @@ const startLottery = () => {
         duration: 8000
     })
     currentStatus.value = 2
-    rollBall(10, 3000)
+    rollBall(100, 30000)
 }
 
 const stopLottery = async () => {
