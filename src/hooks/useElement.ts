@@ -52,7 +52,7 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
         element.children[0].textContent = person.name;
     }
 
-    element.children[1].style.fontSize = textSize * 1.5 + 'px'
+    element.children[1].style.fontSize = textSize * 1 + 'px'
     if (person.department) {
         // element.children[2].innerHTML = `${person.department ? person.department : ''}`
         element.children[1].textContent = person.department
