@@ -213,11 +213,11 @@ onMounted(() => {
                                 v-if="item.isShow">
                                 <div v-if="item.isUsed"
                                     class="absolute z-50 w-full h-full bg-gray-800/70 item-mask rounded-xl"></div>
-                                <figure class="w-10 h-10 rounded-xl">
+                                <div class="rounded-xl" style="width: 4rem;height: 4rem;margin-left:20px">
                                     <ImageSync v-if="item.picture.url" :imgItem="item.picture"></ImageSync>
                                     <img v-else :src="defaultPrizeImage" alt="Prize"
                                         class="object-cover h-full rounded-xl" />
-                                </figure>
+                                </div>
                                 <div class="items-center p-0 text-center card-body">
                                     <div class="tooltip tooltip-left" :data-tip="item.name">
                                         <h2
