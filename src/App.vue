@@ -57,9 +57,9 @@ return isChrome||isEdge
 onMounted(() => {
     setLocalTheme(localTheme.value)
     setCurrentPrize()
-    if(judgeMobile()||!judgeChromeOrEdge()){
-        tipDialog.value.showModal()
-    }
+    // if(judgeMobile()||!judgeChromeOrEdge()){
+    //     tipDialog.value.showModal()
+    // }
 })
 </script>
 

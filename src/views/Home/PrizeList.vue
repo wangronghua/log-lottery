@@ -91,7 +91,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex items-center">
+    <div class="flex items-center" style="top:20%">
         <dialog id="my_modal_1" ref="temporaryPrizeRef" class="border-none modal">
             <div class="modal-box">
                 <h3 class="text-lg font-bold">增加临时抽奖</h3>
@@ -205,7 +205,7 @@ onMounted(() => {
                 </div>
             </div>
             <transition name="prize-list" :appear="true">
-                <div v-if="prizeShow && !isMobile && !temporaryPrize.isShow" class="flex items-center">
+                <div v-if="prizeShow && !temporaryPrize.isShow" class="flex items-center">
                     <ul class="flex flex-col gap-1 p-2 rounded-xl bg-slate-500/50" ref="prizeListRef">
                         <li v-for="item in localPrizeList" :key="item.id"
                             :class="currentPrize.id == item.id ? 'current-prize' : ''">
