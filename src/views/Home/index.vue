@@ -798,7 +798,7 @@ onUnmounted(() => {
                     </button>
                 </div>
 
-                <div class="start">
+                <div class="start" v-show="currentPrize.count<10">
                     <button class="btn-cancel" @click="quitLottery"><strong>取消</strong>
                         <div id="container-stars">
                             <div id="stars"></div>
