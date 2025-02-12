@@ -211,7 +211,7 @@ onMounted(() => {
                             :class="currentPrize.id == item.id ? 'current-prize' : ''">
                             <div class="relative flex flex-row items-center justify-between w-64 h-20 shadow-xl card bg-base-100"
                                 v-if="item.isShow">
-                                <div v-if="item.isUsed"
+                                <div v-if="!item.isUsed"
                                     class="absolute z-50 w-full h-full bg-gray-800/70 item-mask rounded-xl"></div>
                                 <div class="rounded-xl" style="width: 4rem;height: 4rem;margin-left:20px">
                                     <ImageSync v-if="item.picture.url" :imgItem="item.picture"></ImageSync>

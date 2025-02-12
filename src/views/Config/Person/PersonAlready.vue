@@ -33,6 +33,10 @@ const tableColumnsList = [
         props: 'department',
     },
     {
+        label: '手机',
+        props: 'phone',
+    },
+    {
         label: '奖品',
         props: 'prizeName',
         sort: true
@@ -58,6 +62,10 @@ const tableColumnsDetail = [
     {
         label: '机构',
         props: 'department',
+    },
+    {
+        label: '手机',
+        props: 'phone',
     },
     {
         label: '奖品',

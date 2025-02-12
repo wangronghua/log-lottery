@@ -439,23 +439,27 @@ const startLottery = () => {
     leftover < luckyCount.value ? luckyCount.value = leftover : luckyCount
     for (let i = 0; i < luckyCount.value; i++) {
         if (personPool.value.length > 0) {
-            if(currentPrize.value.name.indexOf('特等奖')>=0){
-                while(true){
-                    const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
-                    var person = personPool.value[randomIndex];
-                    if(person.department === '嘉宾'){
-                        continue;
-                    }
+            // if(currentPrize.value.name.indexOf('特等奖')>=0){
+            //     while(true){
+            //         const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
+            //         var person = personPool.value[randomIndex];
+            //         if(person.department === '嘉宾'){
+            //             continue;
+            //         }
 
-                    luckyTargets.value.push(person)
-                    personPool.value.splice(randomIndex, 1)
-                    break;
-                }
-            }else{
-                const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
-                luckyTargets.value.push(personPool.value[randomIndex])
-                personPool.value.splice(randomIndex, 1)
-            }
+            //         luckyTargets.value.push(person)
+            //         personPool.value.splice(randomIndex, 1)
+            //         break;
+            //     }
+            // }else{
+            //     const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
+            //     luckyTargets.value.push(personPool.value[randomIndex])
+            //     personPool.value.splice(randomIndex, 1)
+            // }
+            
+            const randomIndex = Math.round(Math.random() * (personPool.value.length - 1))
+            luckyTargets.value.push(personPool.value[randomIndex])
+            personPool.value.splice(randomIndex, 1)
         }
     }
     toast.open({
