@@ -53,13 +53,24 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
         element.children[0].style.fontSize = textSize * 1 + 'px';
     }
     if (person.name) {
-        element.children[0].textContent = person.name;
+        if(person.name.length > 2){
+            element.children[0].textContent = person.name.substr(0,1)+'*'.repeat(person.name.length-2)+person.name.substr(person.name.length-1,1);
+        } else if(person.name.length === 2){
+            element.children[0].textContent = '*' + person.name.substr(1,1);
+        } else {
+            element.children[0].textContent = person.name;
+        }
     }
 
     element.children[1].style.fontSize = textSize * 1 + 'px'
     if (person.department) {
         // element.children[2].innerHTML = `${person.department ? person.department : ''}`
         element.children[1].textContent = person.department
+    }
+
+    element.children[2].style.fontSize = textSize * 1 + 'px'
+    if (person.phone) {
+        element.children[2].textContent = `${person.phone.toString().substr(0,3)}****${person.phone.toString().substr(7)}`;
     }
 
     return element

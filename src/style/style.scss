@@ -40,7 +40,7 @@
         align-items:center;
         justify-content:center;
     }
-    .card-department {
+    .card-department,.card-phone {
         letter-spacing: 5px;
         position: absolute;
         left: 0;
@@ -78,11 +78,15 @@
         background: url(../assets/images/card1.png);
         color:#E8BB97;
         .card-name {
-            top: 15%;
+            top: 5%;
             height: 40%;
         }
         .card-department{
-            top: 50%;
+            top: 25%;
+            height: 40%;
+        }
+        .card-phone{
+            top: 55%;
             height: 40%;
         }
     }
@@ -102,11 +106,15 @@
     left:50%;
     .element-card,.pattern-element-card {
         .card-name {
-            top: 10%;
+            top: 5%;
             height: 40%;
         }
         .card-department{
-            top: 50%;
+            top: 25%;
+            height: 40%;
+        }
+        .card-phone{
+            top: 55%;
             height: 40%;
         }
     }
@@ -116,11 +124,15 @@
     left:50%;
     .element-card,.pattern-element-card {
         .card-name {
-            top: 10%;
+            top: 5%;
             height: 40%;
         }
         .card-department{
-            top: 50%;
+            top: 25%;
+            height: 40%;
+        }
+        .card-phone{
+            top: 55%;
             height: 40%;
         }
     }

@@ -142,6 +142,11 @@ const init = () => {
         department.innerHTML = `${tableData.value[i].department}<br/>${tableData.value[i].identity}`;
         element.appendChild(department);
 
+        const phone = document.createElement('div');
+        phone.className = 'card-phone';
+        phone.innerHTML = `${tableData.value[i].phone}`;
+        element.appendChild(phone);
+
         element = useElementStyle(element, tableData.value[i], i, patternList.value, patternColor.value, cardColor.value, cardSize.value)
         const object = new CSS3DObject(element);
         object.position.x = Math.random() * 4000 - 2000;
