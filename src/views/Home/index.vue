@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, } from 'vue'
 import PrizeList from './PrizeList.vue'
-import { useElementStyle, useElementPosition } from '@/hooks/useElement'
+import { useElementStyle, useElementPosition,processName,processPhone } from '@/hooks/useElement'
 import StarsBackground from '@/components/StarsBackground/index.vue'
 import confetti from 'canvas-confetti'
 import { filterData, selectCard } from '@/utils'
@@ -30,7 +30,7 @@ const personConfig = useStore().personConfig
 const globalConfig = useStore().globalConfig
 const prizeConfig = useStore().prizeConfig
 
-const { getAllPersonList: allPersonList, getNotPersonList: notPersonList, getNotThisPrizePersonList: notThisPrizePersonList } = storeToRefs(personConfig)
+const { getAllPersonList: allPersonList, getAlreadyPersonDetail: alreadyPersonList, getNotPersonList: notPersonList, getNotThisPrizePersonList: notThisPrizePersonList } = storeToRefs(personConfig)
 const { getCurrentPrize: currentPrize } = storeToRefs(prizeConfig)
 const { getTopTitle: topTitle, getCardColor: cardColor, getPatterColor: patternColor, getPatternList: patternList, getTextColor: textColor, getLuckyColor: luckyColor, getCardSize: cardSize, getTextSize: textSize, getRowCount: rowCount } = storeToRefs(globalConfig)
 const tableData = ref<any[]>([])
@@ -42,6 +42,7 @@ const containerRef = ref<HTMLElement>()
 const canOperate = ref(true)
 const cameraZ = ref(3000)
 
+const lowzIndex=ref(false)
 const scene = ref()
 const camera = ref()
 const renderer = ref()
@@ -376,6 +377,7 @@ function resetCamera() {
 function render() {
     renderer.value.render(scene.value, camera.value);
 }
+
 const enterLottery = async () => {
     if (!canOperate.value) {
         return
@@ -397,6 +399,7 @@ const enterLottery = async () => {
     // }
     canOperate.value = false
     await transform(targets.sphere, 1000)
+    lowzIndex.value=false;
     currentStatus.value = 1
     rollBall(1, 20000)
 }
@@ -482,6 +485,7 @@ const stopLottery = async () => {
         return
     }
     clearInterval(intervalTimer.value)
+    lowzIndex.value=true;
     intervalTimer.value = null
     canOperate.value = false
     rollBall(0, 1)
@@ -773,6 +777,25 @@ onUnmounted(() => {
         </div>
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
+        <div v-show="currentStatus!=0" style="z-index:1000;position:absolute;top:20.37%;right:5%;width:17.5%;height:72%; border-radius: 0.75rem;background: #282A36;">
+            <div style="position:relative;width:100%;height:100%;display:flex;text-align: center;justify-content: center;flex-direction: column;">
+                <div class="righttitle title" style="position:absolute;top:2.57%;font-weight: 600;font-size: 22px;color: #FFFFFF;width: 100%;height:3.86%;">中奖名单({{alreadyPersonList.length}})</div>
+            
+                <div style="position:absolute;top:9%;width:100%;height:100%;overflow:hidden;display:flex;flex-direction: column;align-items: center;">
+                    <div v-for="item in alreadyPersonList.slice().reverse()" :key="item.uid" style="margin-bottom:1.8%;width:88.1%;height:7.46%;display:flex;justify-content: center;flex-direction: row;background: rgba(255, 255, 255, 0.2);box-shadow: 0px 2px 4px 0px rgba(96,0,0,0.5);border-radius: 18px;">
+                        <div class="name">
+                            {{ processName(item.name) }}
+                        </div>
+                        <div class="phone">
+                            {{ processPhone(item.phone) }}
+                        </div>
+                        <div class="department">
+                            {{ item.department }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- 选中菜单结构 start-->
         <div id="menu">
@@ -830,7 +853,7 @@ onUnmounted(() => {
 
     <!-- <LuckyView :luckyPersonList="luckyTargets"  ref="LuckyViewRef"></LuckyView> -->
     <!-- <PlayMusic class="absolute right-0 bottom-1/2"></PlayMusic> -->
-    <PrizeList v-show="currentStatus!==3" class="absolute left-0 top-32"></PrizeList>
+    <PrizeList v-show="currentStatus!==3" class="absolute left-0 top-8"></PrizeList>
 </template>
 
 <style scoped lang="scss">
@@ -1101,6 +1124,99 @@ strong {
     box-shadow: 0 0 0.6em .25em var(--glow-color),
         0 0 2.5em 2em var(--glow-spread-color),
         inset 0 0 .5em .25em var(--glow-color);
+}
+
+
+.renyuantop{
+    z-index: 10; 
+}
+
+.renyuanparent{
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+.renyuan {
+    padding:20px;
+    display:flex;
+    flex-wrap: wrap;
+
+    .headpic-c{
+        overflow:hidden;
+        width:var(--headpic-width);
+        margin:auto;
+        //border: 2px solid;
+        position: relative; 
+        padding: var(--headpic-padding);
+        display: flex;
+
+        .headpic{
+            width:var(--headpic-width); 
+            height:auto;
+            aspect-ratio:1;
+            object-fit: cover;
+            border-radius:50%; 
+        }
+    }
+    .headpic-c::before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        background-image: url(../../assets/images/headbg.png);
+        background-size: cover; /* 让背景图充满容器 */
+        background-position: center;
+        z-index: -1; /* 将背景图置于图片后面 */
+        border-radius: 50%; /* 背景图的边缘也保持圆形 */
+    }
+}
+.renyuanright{
+    flex-flow:column;
+    .renyuanitem{
+        display: flex;
+        flex:1;
+        flex-direction:row;
+        padding:3px 0px;
+        margin-bottom: 20px;
+        .headpic-c{
+            width:var(--headpic-width);
+            margin-right: 3%;
+        }
+        .prize{
+            font-weight: 500;
+            font-size: 22px;
+            color: #333333;
+            line-height: 30px;
+            text-align: left;
+
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+.name,.phone,.department{
+    font-size: 1rem;
+    color: #FFFFFF;
+    line-height: 28px;
+    font-style: normal;
+    display: flex;
+    align-items: center;
+}
+.name{
+    font-weight: 600;
+}
+.phone{
+    font-weight: 400;
+    margin-left: 10px;
+}
+.department{
+    font-weight: 400;
+    font-size: 0.8rem;
+    line-height: 22px;
+    margin-left: 10px;
 }
 
 // 按钮动画

@@ -53,13 +53,7 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
         element.children[0].style.fontSize = textSize * 1 + 'px';
     }
     if (person.name) {
-        if(person.name.length > 2){
-            element.children[0].textContent = person.name.substr(0,1)+'*'.repeat(person.name.length-2)+person.name.substr(person.name.length-1,1);
-        } else if(person.name.length === 2){
-            element.children[0].textContent = '*' + person.name.substr(1,1);
-        } else {
-            element.children[0].textContent = person.name;
-        }
+        element.children[0].textContent = processName(person.name);
     }
 
     element.children[1].style.fontSize = textSize * 1 + 'px'
@@ -70,10 +64,25 @@ export const useElementStyle = (element: any, person: IPersonConfig, index: numb
 
     element.children[2].style.fontSize = textSize * 1 + 'px'
     if (person.phone) {
-        element.children[2].textContent = `${person.phone.toString().substr(0,3)}****${person.phone.toString().substr(7)}`;
+        element.children[2].textContent = processPhone(person.phone);
     }
 
     return element
+}
+export const processName = (name:string) => {
+    if(name){
+        if(name.length > 2){
+            return name.substr(0,1)+'*'.repeat(name.length-2)+name.substr(name.length-1,1);
+        } else if(name.length === 2){
+            return '*' + name.substr(1,1);
+        } else {
+            return name;
+        }
+    }
+    return '';
+}
+export const processPhone = (phone:string) => {
+    return `${phone.toString().substr(0,3)}****${phone.toString().substr(7)}`;
 }
 
 // export const useElementPosition=(element:any,count:number,cardSize:{width:number,height:number},windowSize:{width:number,height:number},cardIndex:number)=>{
