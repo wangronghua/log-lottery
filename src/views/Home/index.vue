@@ -777,12 +777,12 @@ onUnmounted(() => {
         </div>
     </div>
     <div id="container" ref="containerRef" class="3dContainer">
-        <div v-show="currentStatus!=0" style="z-index:1000;position:absolute;top:20.37%;right:5%;width:17.5%;height:72%; border-radius: 0.75rem;background: #282A36;">
-            <div style="position:relative;width:100%;height:100%;display:flex;text-align: center;justify-content: center;flex-direction: column;">
-                <div class="righttitle title" style="position:absolute;top:2.57%;font-weight: 600;font-size: 22px;color: #FFFFFF;width: 100%;height:3.86%;">中奖名单({{alreadyPersonList.length}})</div>
+        <div v-show="currentStatus!=0" class="alreadylist">
+            <div class="alreadylist-content">
+                <div class="alreadylist-title">中奖名单({{alreadyPersonList.length}})</div>
             
-                <div style="position:absolute;top:9%;width:100%;height:100%;overflow:hidden;display:flex;flex-direction: column;align-items: center;">
-                    <div v-for="item in alreadyPersonList.slice().reverse()" :key="item.uid" style="margin-bottom:1.8%;width:88.1%;height:7.46%;display:flex;justify-content: center;flex-direction: row;background: rgba(255, 255, 255, 0.2);box-shadow: 0px 2px 4px 0px rgba(96,0,0,0.5);border-radius: 18px;">
+                <div class="alreadylist-bottom">
+                    <div class="alreadylist-bottom-item" v-for="item in alreadyPersonList.slice().reverse()" :key="item.uid">
                         <div class="name">
                             {{ processName(item.name) }}
                         </div>
@@ -1126,73 +1126,56 @@ strong {
         inset 0 0 .5em .25em var(--glow-color);
 }
 
+.alreadylist{
+    z-index:1000;
+    position:absolute;
+    top:20.37%;
+    right:5%;
+    width:17.5%;
+    height:72%; 
+    border-radius: 0.75rem;
+    background: #282A36;
 
-.renyuantop{
-    z-index: 10; 
-}
+    .alreadylist-content{
+        position:relative;
+        width:100%;
+        height:100%;
+        display:flex;
+        text-align: center;
+        justify-content: center;
+        flex-direction: column;
 
-.renyuanparent{
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
-}
-.renyuan {
-    padding:20px;
-    display:flex;
-    flex-wrap: wrap;
-
-    .headpic-c{
-        overflow:hidden;
-        width:var(--headpic-width);
-        margin:auto;
-        //border: 2px solid;
-        position: relative; 
-        padding: var(--headpic-padding);
-        display: flex;
-
-        .headpic{
-            width:var(--headpic-width); 
-            height:auto;
-            aspect-ratio:1;
-            object-fit: cover;
-            border-radius:50%; 
-        }
-    }
-    .headpic-c::before {
-        content: "";
-        width: 100%;
-        height: 100%;
-        background-image: url(../../assets/images/headbg.png);
-        background-size: cover; /* 让背景图充满容器 */
-        background-position: center;
-        z-index: -1; /* 将背景图置于图片后面 */
-        border-radius: 50%; /* 背景图的边缘也保持圆形 */
-    }
-}
-.renyuanright{
-    flex-flow:column;
-    .renyuanitem{
-        display: flex;
-        flex:1;
-        flex-direction:row;
-        padding:3px 0px;
-        margin-bottom: 20px;
-        .headpic-c{
-            width:var(--headpic-width);
-            margin-right: 3%;
-        }
-        .prize{
-            font-weight: 500;
+        .alreadylist-title{
+            position:absolute;
+            top:2.57%;
+            font-weight: 600;
             font-size: 22px;
-            color: #333333;
-            line-height: 30px;
-            text-align: left;
+            color: #FFFFFF;
+            width: 100%;
+            height:3.86%;
+        }
 
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .alreadylist-bottom{
+            position:absolute;
+            top:9%;
+            width:100%;
+            height:100%;
+            overflow:hidden;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+
+            .alreadylist-bottom-item{
+                margin-bottom:1.8%;
+                width:88.1%;
+                height:7.46%;
+                display:flex;
+                justify-content: center;
+                flex-direction: row;
+                background: rgba(255, 255, 255, 0.2);
+                box-shadow: 0px 2px 4px 0px rgba(96,0,0,0.5);
+                border-radius: 18px;
+            }
         }
     }
 }
