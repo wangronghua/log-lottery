@@ -81,17 +81,23 @@ async function initTableData() {
         allPersonList.value.push(hasPrizeDrawList.value[i]);
     }
 
-    
-    const res = await request<any>({
-            url:urlpre+'/system/prize/list',
-            method: 'post',
-            data:'pageSize=999&pageNum=1&orderByColumn=createTime&isAsc=desc&name=&type=',
-            withCredentials: true
-        });
-    for(var i=0;i<res.rows.length;i++)
-    {
-        var row = res.rows[i];
-        prizes.value.push({name:row.name,headPic:row.pictureUrl});
+    if(isTest()){
+        for(var i=0;i<mocklist.length;i++)
+        {
+            prizes.value.push(mocklist[i]);
+        }
+    }else{
+        const res = await request<any>({
+                url:urlpre+'/system/prize/list',
+                method: 'post',
+                data:'pageSize=999&pageNum=1&orderByColumn=createTime&isAsc=desc&name=&type=',
+                withCredentials: true
+            });
+        for(var i=0;i<res.rows.length;i++)
+        {
+            var row = res.rows[i];
+            prizes.value.push({name:row.name,headPic:row.pictureUrl});
+        }
     }
 }
 var mocklist = [{"name":"LuckyStar✨","headPic":"https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/demopic/1.jpg"},
