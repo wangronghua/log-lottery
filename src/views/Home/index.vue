@@ -14,9 +14,12 @@ import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import request from '@/api/request';
+import vueDanmaku from 'vue3-danmaku'
 // import request, { AxiosResponse } from 'axios';
 import { debug } from 'console'
 
+// 弹幕 https://blog.csdn.net/aaaa_aaab/article/details/142879115
+var danmus = ref<any[]>([])
 const toast = useToast();
 const router = useRouter()
 const globalConfig = useStore().globalConfig
@@ -66,13 +69,42 @@ function changeHideNickName(){
         localStorage.setItem('hideNickName','0');
     }
 }
+async function reloadDanmu(){
+    const res = await request<any>({
+            url:urlpre+'/system/drawer/selectBarrageList',
+            method: 'get',
+            withCredentials: true
+        });
+    
+    danmus.value = res.data;
+    console.log('reloaded damu',danmus.value);
+
+    // danmus.value = [...hasPrizeDrawList.value];
+
+    // danmus.value[0].big=1;
+    // danmus.value[0].prizeName='qweeqef上午发过去问问请问给我个答复吧三分球W外观风格为非法侵入合并受到德国受到父亲为';
+    // console.log(danmus.value);
+    // for(var i=0;i<20;i++){
+    //     danmus.value.push(danmus.value[1])
+    // }
+}
+function addToDanmu(item:any){
+    var index = danmus.value.findIndex(x=>x.uid==item.uid);
+    if(index<0){
+        danmus.value.unshift(item);
+    }
+}
+var reloadDanmuInternal=null;
 // 填充数据，填满七行
 async function initTableData() {
     var data = await getLoadData();//获取已抽奖和未抽奖用户
     if(data==null)return;
     notPrizeDrawList.value = data.notPrizeDraw
     hasPrizeDrawList.value = data.hasPrizeDraw
-
+    reloadDanmu();
+    reloadDanmuInternal = window.setInterval(function(){
+        reloadDanmu();
+    }, 300000);
     
     for (let i = 0; i < notPrizeDrawList.value.length; i++) {
         allPersonList.value.push(notPrizeDrawList.value[i]);
@@ -503,6 +535,9 @@ const stopLottery = async () => {
             return;
         }
         data = res.data;
+        for(var i=0;i<res.data.length;i++){
+            addToDanmu(res.data[i])
+        }
     }
 
     if(data.length==0){
@@ -803,6 +838,7 @@ onUnmounted(() => {
     window.removeEventListener('keydown', listenKeyboard)
 })
 const urlpre=location.origin+'/ystest';
+// const urlpre='http://localhost:9000/ystest';
 const isTest = ()=>{
     return router.currentRoute.value.query.activityId=="0";
 };
@@ -829,6 +865,16 @@ const getLoadData = async ()=>{
 </script>
 
 <template>
+    <vue-danmaku ref="danmaku" v-model:danmus="danmus" useSlot loop class="danmaku" :isSuspend="true" :top="20" :channels="1" :speeds="100">
+        <template v-slot:dm="{ danmu }">
+            <div class="danmaku-name">
+                <span :class="['bullet-item',danmu.big?'big':'']">
+                    <img :src="danmu.headPic" alt="">
+                    <span>抽中了 {{danmu.prizeName}}</span>
+                </span>
+            </div>
+        </template>
+    </vue-danmaku>
     <div class="absolute z-10 flex flex-col items-center justify-center -translate-x-1/2 left-1/2">
         <h2 class="pt-12 m-0 mb-12 font-mono tracking-wide text-center leading-12 header-title"
             :style="{ fontSize: '45px', color: textColor }"></h2>
@@ -1325,4 +1371,59 @@ strong {
         opacity: 1;
     }
 }
+
+//弹幕
+	.baberrage {
+		padding-top: 300px;
+		width: 100%;
+		height: 70vh;
+		overflow: hidden;
+		background: url(@/assets/images/bac1.png);
+		background-size: 100%;
+	}
+ 
+	.danmaku {
+		width: 100%;
+		height: 50%;
+        margin-top:1%;
+        z-index:1000;
+	}
+    
+	.control{
+		margin-top: 20px;
+	}
+	.control>button{
+		margin-right: 12px;
+	}
+	.control>button:hover{
+		background-color: #e73c7e;
+		border: 1px solid #fff;
+		color: #fff;
+		cursor: pointer;
+		animation: rightToleft 9s linear both;
+	}
+	.bullet-item {
+		white-space: nowrap;
+        background-color: rgba(0, 0, 0, 0.5);
+		border-radius: 30px;
+		height: 30px;
+		font-size: 14px;
+		color: #FFFFFF;
+		line-height: 30px;
+		padding-right: 20px;
+		display: flex;
+        &.big{
+		    background-color: rgb(255, 204, 0);
+            color:black;
+        }
+        img{
+            border-radius:50%;
+            margin-right: 10px;
+        }
+        span{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+	}
 </style>
