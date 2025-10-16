@@ -1373,14 +1373,6 @@ strong {
 }
 
 //弹幕
-	.baberrage {
-		padding-top: 300px;
-		width: 100%;
-		height: 70vh;
-		overflow: hidden;
-		background: url(@/assets/images/bac1.png);
-		background-size: 100%;
-	}
  
 	.danmaku {
 		width: 100%;
