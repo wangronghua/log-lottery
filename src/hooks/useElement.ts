@@ -1,7 +1,7 @@
 import { rgba } from '@/utils/color'
 import { IPersonConfig } from '@/types/storeType'
 
-export const useElementStyle = (element: any, person: IPersonConfig, nickname:string, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default') => {
+export const useElementStyle = (element: any, person: IPersonConfig, nickname:string, patternList: number[], patternColor: string, cardColor: string, cardSize: { width: number, height: number }, mod: 'default' | 'lucky'|'sphere' = 'default', big: number = 0) => {
     let rate = cardSize.width/140
     let textSize = 14 * rate*1.5;
 
@@ -19,7 +19,11 @@ export const useElementStyle = (element: any, person: IPersonConfig, nickname:st
     element.style.width = `${cardSize.width}px`;
     element.style.height = `${cardSize.height}px`;
     if (mod == 'lucky') {
-        element.className = 'lucky-element-card'
+        if(big){
+            element.className = 'lucky-element-card lucky-element-card-big';
+        }else{
+            element.className = 'lucky-element-card lucky-element-card-small';
+        }
     }
     else {
         element.className = 'element-card'

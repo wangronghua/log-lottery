@@ -77,10 +77,16 @@
     display: none;
 }
 
+.lucky-element-card-big{
+    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg3.png?1) no-repeat;
+}
+.lucky-element-card-small{
+    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
+}
+
 .lucky-element-card {
     cursor: default;
     text-align: center;
-    background: url(https://miniprogramyuansong.oss-cn-hangzhou.aliyuncs.com/static/prizedraw/cardbg.png?1) no-repeat;
     background-size:100% 100%;
 
     .card-name {

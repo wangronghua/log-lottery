@@ -574,6 +574,7 @@ const stopLottery = async () => {
         for(var j=0;j<luckyTargets.value.length;j++){
             if(luckyTargets.value[j].uid==data[i].uid){
                 luckyTargets.value[j].prizeName=data[i].prizeName;
+                luckyTargets.value[j].big=data[i].big;
                 break;
             }
         }
@@ -670,7 +671,7 @@ const stopLottery = async () => {
                     }, 1200)
                     .easing(TWEEN.Easing.Exponential.InOut)
                     .onStart(() => {
-                        item.element = useElementStyle(item.element, person, processNickName(person.name), patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky')
+                        item.element = useElementStyle(item.element, person, processNickName(person.name), patternList.value, patternColor.value, luckyColor.value, { width: cwidth, height: cheight}, 'lucky', person.big)
                     })
                     .start()
                     .onComplete(() => {
@@ -694,7 +695,7 @@ const stopLottery = async () => {
                             window.setTimeout(function(){
                                 window.startPlayYanhua();
                                     // (window as any)["startPlayYanhua"]();
-                            },50);
+                            },400);
                         }
                         // resetCamera()
                     })
