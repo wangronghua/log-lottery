@@ -135,5 +135,6 @@ export default defineConfig(({ mode }) => {
                 web: [/\.[jt]sx$/],
             },
         },
+        publicDir: 'public'
     };
 });

@@ -18,6 +18,15 @@ import vueDanmaku from 'vue3-danmaku'
 // import request, { AxiosResponse } from 'axios';
 import { debug } from 'console'
 
+declare global {
+  interface Window {
+    // 已知的全局函数
+    startPlayYanhua: () => void;
+    // 未知的全局属性
+    [key: string]: any;
+  }
+}
+
 // 弹幕 https://blog.csdn.net/aaaa_aaab/article/details/142879115
 var danmus = ref<any[]>([])
 const toast = useToast();
@@ -680,6 +689,13 @@ const stopLottery = async () => {
                     .onComplete(() => {
                         // coverbgRef.value.style.visibility="visible";
                         confettiFire()
+                        
+                        if(data.some((x: { big: any })=>x.big)) {
+                            window.setTimeout(function(){
+                                window.startPlayYanhua();
+                                    // (window as any)["startPlayYanhua"]();
+                            },50);
+                        }
                         // resetCamera()
                     })
             }

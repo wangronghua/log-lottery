@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-     <dialog id="my_modal_1" ref="tipDialog" class="border-none modal">
+     <dialog id="my_modal_1" ref="tipDialog" class="border-none modal w-screen">
         <div class="modal-box">
             <h3 class="text-lg font-bold">提示!</h3>
             <p class="py-4" v-if="judgeMobile()">请使用PC进行访问以获得最佳显示效果</p>
