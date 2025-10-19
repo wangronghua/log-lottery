@@ -149,7 +149,7 @@ const store = {
 				? "1.2" //配置文件头默认值(不必是int)
 				: "2", //手机默认
 			wordShell: true, //文字烟花 默认为开启 若不开启可修改为false
-			autoLaunch: true, //自动发射烟花
+			autoLaunch: false, //自动发射烟花
 			finale: true, //同时放更多烟花
 			skyLighting: SKY_LIGHT_NORMAL + "",
 			hideControls: IS_HEADER,
@@ -1250,6 +1250,7 @@ function updateGlobals(timeStep, lag) {
 	if (store.state.config.autoLaunch) {
 		autoLaunchTime -= timeStep;
 		if (autoLaunchTime <= 0) {
+			console.log('放了');
 			autoLaunchTime = startSequence() * 1.25;
 		}
 	}
@@ -2610,14 +2611,24 @@ function startPlayYanhua(){
 			});
 		}
 	}
+	// togglePause(false);
 	document.querySelector('#donghuacontainer').style.display = '';
-	
+	// updateConfig();
+	for(var i=0;i<3;i++){
+		window.setTimeout(() => {
+			launchShellFromConfig();
+			launchShellFromConfig();
+			launchShellFromConfig();
+			launchShellFromConfig();
+			launchShellFromConfig();
+		}, i*3000);
+	}
     window.setTimeout(function(){
 		document.querySelector('#donghuacontainer').style.display = 'none';
-    },15000);
+    },13000);
 }
 var hasInited = false;
 function stopPlayYanhua(){
-	console.log('元素被点击了！');
+	// togglePause(true);
 	document.querySelector('#donghuacontainer').style.display = 'none';
 }
