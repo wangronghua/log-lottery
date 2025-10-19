@@ -16,6 +16,10 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 import request from '@/api/request';
 import vueDanmaku from 'vue3-danmaku'
 // import request, { AxiosResponse } from 'axios';
+import { useFullscreen } from '@vueuse/core';
+
+const { isFullscreen, toggle } = useFullscreen()
+
 import { debug } from 'console'
 
 declare global {
@@ -51,6 +55,7 @@ const maxwidth = ref(0)
 const maxheight = ref(0)
 const coverbgobject = ref<any>()
 const hideNickName = ref(false)
+
 
 const targets = {
     grid: <any[]>[],
@@ -866,7 +871,7 @@ onUnmounted(() => {
     intervalTimer.value = null
     window.removeEventListener('keydown', listenKeyboard)
 })
-const urlpre=location.origin+'/ystest';
+const urlpre=location.origin+'/ys';
 // const urlpre='http://localhost:9000/ystest';
 const isTest = ()=>{
     return router.currentRoute.value.query.activityId=="0";
@@ -946,7 +951,15 @@ const getLoadData = async ()=>{
 
         <div id="menu">
 
-            <div style="margin-left: 25.7%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">剩余待抽奖{{notPrizeDrawList.length}}人</div>
+            <div style="margin-left: 3%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">
+                隐私保护
+                <div style="margin-left: 10px;" @click="changeHideNickName">
+                    <div v-if="hideNickName" class="hideNickName" style="border: 1px solid #FFFFFF;background: #FF2100;display:flex;"><div style="flex:1"></div>开<div class="circle" style="margin-right:3px;margin-left: 8px;"></div></div>
+                    <div v-else class="hideNickName" style="background: #BCBCBC;"><div class="circle" style="margin-left:3px;margin-right: 8px;"></div>关</div>
+                </div>
+            </div>
+
+            <div style="margin-left: 10.7%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">剩余待抽奖{{notPrizeDrawList.length}}人</div>
 
             <div class="start">
                 <button v-if="currentStatus == 1" class="btn-start" @click="startLottery">开始
@@ -971,9 +984,9 @@ const getLoadData = async ()=>{
                 人</div>
 
             <div style="margin-left: 8%;color: rgba(255,255,255,0.8);font-size: 22px;font-weight: 400;display:flex;align-items:center;">
-                隐私保护
-                <div style="margin-left: 10px;" @click="changeHideNickName">
-                    <div v-if="hideNickName" class="hideNickName" style="border: 1px solid #FFFFFF;background: #FF2100;display:flex;"><div style="flex:1"></div>开<div class="circle" style="margin-right:3px;margin-left: 8px;"></div></div>
+                全屏
+                <div style="margin-left: 10px;" @click="toggle">
+                    <div v-if="isFullscreen" class="hideNickName" style="border: 1px solid #FFFFFF;background: #FF2100;display:flex;"><div style="flex:1"></div>开<div class="circle" style="margin-right:3px;margin-left: 8px;"></div></div>
                     <div v-else class="hideNickName" style="background: #BCBCBC;"><div class="circle" style="margin-left:3px;margin-right: 8px;"></div>关</div>
                 </div>
             </div>
