@@ -657,6 +657,7 @@ const stopLottery = async () => {
             .onComplete(() => {
             })
 
+        const animationPromises:Promise<void>[] = [];
         luckyTargets.value.forEach((person: IPersonConfig, index: number) => {
             if(person.prizeName){
                 let cardIndex = selectCard(luckyCardList.value, prizes.value.length)
@@ -679,7 +680,10 @@ const stopLottery = async () => {
                         
                         currentStatus.value = 3
                     })
-                new TWEEN.Tween(item.rotation)
+                
+
+                const promise: Promise<void>  = new Promise((resolve) => {
+                    new TWEEN.Tween(item.rotation)
                     .to({
                         x: 0,
                         y: 0,
@@ -690,17 +694,25 @@ const stopLottery = async () => {
                     .onComplete(() => {
                         // coverbgRef.value.style.visibility="visible";
                         confettiFire()
-                        
-                        if(data.some((x: { big: any })=>x.big)) {
-                            window.setTimeout(function(){
-                                window.startPlayYanhua();
-                                    // (window as any)["startPlayYanhua"]();
-                            },400);
-                        }
+                        resolve(); 
                         // resetCamera()
                     })
+                });
+                
+                animationPromises.push(promise);
+
             }
-        }) 
+        })
+
+        Promise.all(animationPromises).then(() => {
+            if(data.some((x: { big: any })=>x.big)) {
+                window.setTimeout(function(){
+                    window.startPlayYanhua();
+                        // (window as any)["startPlayYanhua"]();
+                },400);
+            }
+        });
+
     }else{
         canOperate.value = true
         currentStatus.value = 3
