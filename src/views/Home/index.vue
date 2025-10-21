@@ -899,7 +899,7 @@ const getLoadData = async ()=>{
 </script>
 
 <template>
-    <vue-danmaku ref="danmaku" v-model:danmus="danmus" useSlot loop class="danmaku" :isSuspend="true" :top="20" :channels="1" :speeds="100">
+    <vue-danmaku v-if="danmus.length>=10" ref="danmaku" v-model:danmus="danmus" useSlot loop class="danmaku" :isSuspend="true" :top="20" :channels="1" :speeds="100">
         <template v-slot:dm="{ danmu }">
             <div class="danmaku-name">
                 <span :class="['bullet-item',danmu.big?'big':'']">
