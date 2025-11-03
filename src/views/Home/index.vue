@@ -431,7 +431,7 @@ const enterLottery = async () => {
     lowzIndex.value=false;
     // coverbgRef.value.style.visibility="hidden";
     currentStatus.value = 1
-    rollBall(0.1, 2000)
+    rollBall(1, 20000)
 }
 
 // 开始抽奖
@@ -463,7 +463,7 @@ const startLottery = () => {
     setTimeout(function(){
         currentStatus.value = 2
     },2000);
-    rollBall(5, 3000)
+    rollBall(100, 30000)
 }
 const changeLuckyCount = (event:any)=>{
     if(luckyCount.value > maxLuckCount){
@@ -871,7 +871,7 @@ onUnmounted(() => {
     intervalTimer.value = null
     window.removeEventListener('keydown', listenKeyboard)
 })
-const urlpre=location.origin+'/ys';
+const urlpre=location.origin+(router.currentRoute.value.query.istest?'/ystest':'/ys');
 // const urlpre='http://localhost:9000/ystest';
 const isTest = ()=>{
     return router.currentRoute.value.query.activityId=="0";
